@@ -160,7 +160,7 @@ int main() {
     float acceleration_rotation = 1.0f;
     float acceleration_translation = 1.0f;
     float  sensitivity = 1.0f;
-    int nb_frames = 0; //Permet de fixer des events en fonction du temps (par exemple au bout de 3 sec changer le sens de translation) 
+    int nb_frames = 0; //Permet de fixer des events en fonction du temps (par exemple au bout de 3 sec changer le sens de translation)
 
     glfwSetKeyCallback(engine.pwindowENGWindow, key_callback);
     //glfwSetCursorPosCallback(engine.pwindowENGWindow, mouse_callback);
