@@ -12,6 +12,30 @@ CCube::CCube() {
 	uiENTVerticesSize = 0;
 }
 
+CCube::CCube(unsigned int id, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number) {
+	enumENTType = cube;
+	uiENTId = id;
+	GLfloat* temp_vertices = nullptr;
+	std::cout << "c'est un cube" << std::endl;
+	strENTName = "Cube " + std::to_string(id);
+	temp_vertices = new (GLfloat[288]);
+	for (int i = 0; i < 288; i++) {
+		temp_vertices[i] = cubeVertices()[i];
+	}
+	pgfENTVertices = temp_vertices;
+	uiENTVerticesSize = 288;
+	vec3ENTWorldPosition = position;
+	pcENTVertexShaderName = vsFile;
+	pcENTFragmentShaderName = fragFile;
+	uiENTTextureEngineNumber = texture_number;
+	//Material values
+	vec3ENTAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
+	vec3ENTDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	vec3ENTSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+	fENTShininess = 0.25f;
+	fENTTransparency = 1.0f;
+}
+
 CCube::CCube(unsigned int id, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency) {
 	enumENTType = cube;
 	uiENTId = id;

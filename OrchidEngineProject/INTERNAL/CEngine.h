@@ -29,17 +29,16 @@
 #include "CShader.h"
 #include "CCamera.h"
 #include "CInputs.h"
+#include "Entities/CCube.h"
 #include "Entities/CLight.h"
 
+#define TYPES_OF_ENTITIES 6
 
 class CTexture;
 
 class CEngine {
 public:
 	int iENGFpsLimiter;
-	int iENGNumberOfEntities; //A incrémenter et décrémenter en temps réel
-	unsigned int* puiENGAvailableEntitiesIDs; //List of all the available entities id
-	unsigned int uiENGNextFreeEntityID;
 	//Post-processing
 	GLfloat gfENGBrightness;
 	GLfloat gfENGContrast;
@@ -76,6 +75,8 @@ public:
 	GLuint iENGFrameNumber; //Numéro de la frame actuelle
 	
 	//Entities
+	int iENGNumberOfEntities; //A incrémenter et décrémenter en temps réel
+	unsigned int* puiENGNextFreeEntitiesIDs; //The next free id for each type of entity
 	GLuint uiENGMaxNumberEntities;
 	CEntity** ppentENGAllEntitiesList;
 	CEntity* pentENGCubeEntitiesList; //A utiliser comme pour ptexENGAllTextures, un CEntity* peut etre mieux qu'un CEntity**
@@ -112,9 +113,9 @@ public:
 	void ENGSetNumberOfEntities(int nb_of_ent);
 	void ENGIncreaseNumberOfEntities(int value_of_inc);
 	int iENGGetNumberOfEntities();
-	void ENGSetNextFreeEntityID(unsigned int next_id);
-	void ENGIncrementNextFreeEntityID(int value_of_inc);
-	unsigned int uiENGGetNextFreeEntityID();
+	void ENGSetNextFreeEntityID(int type_of_entity, unsigned int next_id);
+	void ENGIncrementNextFreeEntityID(int type_of_entity, int value_of_inc);
+	unsigned int uiENGGetNextFreeEntityID(int type_of_entity);
 	void ENGSetBrightness(GLfloat brightness);
 	GLfloat gfENGGetBrightness();
 	void ENGSetContrast(GLfloat contrast);
@@ -142,7 +143,7 @@ public:
 	void ENGFpsCounterAndLimiter();
 
 	//Entity related
-	void ENGAddCubeEntity(CEntity entity);
+	void ENGAddCubeEntity(CCube cube);
 	void ENGAddLightEntity(CLight light);
 	//unsigned int* puiENGEntitiesIdInTheLODArea();
 

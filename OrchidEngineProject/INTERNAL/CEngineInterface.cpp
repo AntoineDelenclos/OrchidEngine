@@ -215,18 +215,19 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
         if (ImGui::SmallButton("Create entity")) {
             //Create a new entity with the set parameters and reset values to default ones
             entity_type_enum newEntityType;
-            unsigned int newEntityId = engine.uiENGGetNextFreeEntityID();
             glm::vec3 newEntityWorldPosition(pgfEGINewEntityXYZPos[0], pgfEGINewEntityXYZPos[1], pgfEGINewEntityXYZPos[2]);
             if (entityTypeCombo == 0) {
                 newEntityType = cube;
-                CEntity newEntity = CEntity(newEntityType, newEntityId, newEntityWorldPosition, "core.vs", "core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
-                newEntity.ENTChangeWorldPosition(newEntity.vec3ENTWorldPosition);
-                newEntity.ENTScaleEntitySize(gfEGINewEntityScaleRatio);
-                rdrEGIRender.RDRCreateMandatoryForEntity(engine, newEntity, newEntity.uiENTId);
-                engine.ENGAddCubeEntity(newEntity); //Modifier pour ajouter dans les listes correspondantes (séparer light et cube par ex.)
+                unsigned int newEntityId = engine.uiENGGetNextFreeEntityID(newEntityType);
+                CCube newCube = CCube(newEntityId, newEntityWorldPosition, "core.vs", "core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
+                newCube.ENTChangeWorldPosition(newCube.vec3ENTWorldPosition);
+                newCube.ENTScaleEntitySize(gfEGINewEntityScaleRatio);
+                rdrEGIRender.RDRCreateMandatoryForEntity(engine, newCube, newCube.uiENTId);
+                engine.ENGAddCubeEntity(newCube); //Modifier pour ajouter dans les listes correspondantes (séparer light et cube par ex.)
             }
             if (entityTypeCombo == 1) {
                 newEntityType = light;
+                unsigned int newEntityId = engine.uiENGGetNextFreeEntityID(newEntityType);
             }
         }
     }

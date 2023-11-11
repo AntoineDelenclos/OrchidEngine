@@ -171,20 +171,20 @@ int main() {
     glm::vec3 Position_nulle(0.f, 0.f, 0.f);
 
 
-    CEntity testEntity_1 = CEntity(cube, engine.uiENGGetNextFreeEntityID(), Position_nulle, "core.vs", "core.frag", 0);
-    CEntity testEntity_2 = CEntity(cube, engine.uiENGGetNextFreeEntityID() + 1, Position_test_2, "core.vs", "core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
+    CCube testCube_1 = CCube(engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "core.vs", "core.frag", 0);
+    CCube testCube_2 = CCube(engine.uiENGGetNextFreeEntityID(cube) + 1, Position_test_2, "core.vs", "core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
 
-    testEntity_1.ENTChangeWorldPosition(testEntity_1.vec3ENTWorldPosition);
-    testEntity_2.ENTChangeWorldPosition(testEntity_2.vec3ENTWorldPosition);
+    testCube_1.ENTChangeWorldPosition(testCube_1.vec3ENTWorldPosition);
+    testCube_2.ENTChangeWorldPosition(testCube_2.vec3ENTWorldPosition);
 
-    testEntity_1.ENTScaleEntitySize(1.5f);
-    testEntity_2.ENTScaleEntitySize(3.f);
+    testCube_1.ENTScaleEntitySize(1.5f);
+    testCube_2.ENTScaleEntitySize(3.f);
 
-    render.RDRCreateMandatoryForEntity(engine, testEntity_1, testEntity_1.uiENTId); //Ici le numero correspond au numero de l'entité et donc de la paire (VAO,VBO)
-    render.RDRCreateMandatoryForEntity(engine, testEntity_2, testEntity_2.uiENTId);
+    render.RDRCreateMandatoryForEntity(engine, testCube_1, testCube_1.uiENTId); //Ici le numero correspond au numero de l'entité et donc de la paire (VAO,VBO)
+    render.RDRCreateMandatoryForEntity(engine, testCube_2, testCube_2.uiENTId);
 
-    engine.ENGAddCubeEntity(testEntity_1);
-    engine.ENGAddCubeEntity(testEntity_2);
+    engine.ENGAddCubeEntity(testCube_1);
+    engine.ENGAddCubeEntity(testCube_2);
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 

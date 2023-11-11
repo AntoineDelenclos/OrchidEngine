@@ -47,12 +47,11 @@ CEngine::CEngine() {
 	ppentENGAllEntitiesList = new (CEntity(*[uiENGMaxNumberEntities]));
 	pentENGCubeEntitiesList = new (CEntity[uiENGMaxNumberEntities]);
 	ppentENGAllEntitiesList[0] = pentENGCubeEntitiesList;
-	puiENGAvailableEntitiesIDs = new(unsigned int[uiENGMaxNumberEntities]);
-	for (int boucle = 0; boucle < uiENGMaxNumberEntities; boucle++) {
-		puiENGAvailableEntitiesIDs[boucle] = boucle;
+	puiENGNextFreeEntitiesIDs = new(unsigned int[TYPES_OF_ENTITIES]); 
+	for (int boucle = 0; boucle < TYPES_OF_ENTITIES; boucle++) {
+		puiENGNextFreeEntitiesIDs[boucle] = 0;
 	}
-	uiENGNextFreeEntityID = 0;
-
+	
 	//Textures
 	uiENGMaxNumberOfTextures = 10;
 	ptexENGAllTextures = new (CTexture[uiENGMaxNumberOfTextures]);
@@ -108,14 +107,14 @@ void CEngine::ENGIncreaseNumberOfEntities(int increase_value) {
 int CEngine::iENGGetNumberOfEntities() {
 	return iENGNumberOfEntities;
 }
-void CEngine::ENGSetNextFreeEntityID(unsigned int next_id) {
-	uiENGNextFreeEntityID = next_id;
+void CEngine::ENGSetNextFreeEntityID(int type_of_entity, unsigned int next_id) {
+	puiENGNextFreeEntitiesIDs[type_of_entity] = next_id;
 }
-void CEngine::ENGIncrementNextFreeEntityID(int val_of_inc) {
-	uiENGNextFreeEntityID += val_of_inc;
+void CEngine::ENGIncrementNextFreeEntityID(int type_of_entity, int val_of_inc) {
+	puiENGNextFreeEntitiesIDs[type_of_entity] += val_of_inc;
 }
-unsigned int CEngine::uiENGGetNextFreeEntityID() {
-	return uiENGNextFreeEntityID;
+unsigned int CEngine::uiENGGetNextFreeEntityID(int type_of_entity) {
+	return puiENGNextFreeEntitiesIDs[type_of_entity];
 }
 void CEngine::ENGSetBrightness(GLfloat brightness) {
 	gfENGBrightness = brightness;
@@ -265,13 +264,17 @@ void CEngine::ENGFrameUpdate() {
 }
 
 ////// ENTITY RELATED //////
-void CEngine::ENGAddCubeEntity(CEntity entity) {
-	//ppentENGAllEntitiesList[uiENGNextFreeEntityID] = entity;
-	pentENGCubeEntitiesList[uiENGNextFreeEntityID] = entity;
+void CEngine::ENGAddCubeEntity(CCube cube) {
+	pentENGCubeEntitiesList[puiENGNextFreeEntitiesIDs[0]] = cube;
 	ENGIncreaseNumberOfEntities(1);
-	ENGIncrementNextFreeEntityID(1);
-	//Mettre à jour la liste des id disponibles
+	ENGIncrementNextFreeEntityID(0, 1);
 }
+
+/*void CEngine::ENGAddLightEntity(CLight light) {
+	pligENGLightEntitiesList[puiENGNextFreeEntitiesIDs[2]] = light;
+	ENGIncreaseNumberOfEntities(1);
+	ENGIncrementNextFreeEntityID(2, 1);
+}*/
 
 ///// TEXTURES RELATED /////
 
