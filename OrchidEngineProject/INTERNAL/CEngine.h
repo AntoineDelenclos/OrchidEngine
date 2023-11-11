@@ -7,13 +7,13 @@
 #include <vector>
 
 //IMGUI
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+#include "../EXTERNAL/IMGUI/imgui.h"
+#include "../EXTERNAL/IMGUI/imgui_impl_glfw.h"
+#include "../EXTERNAL/IMGUI/imgui_impl_opengl3.h"
 
 //IMPLOT
-#include <implot.h>
-#include <implot_internal.h>
+#include "../EXTERNAL/IMPLOT/implot.h"
+#include "../EXTERNAL/IMPLOT/implot_internal.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
 //#include <stb_image.h>

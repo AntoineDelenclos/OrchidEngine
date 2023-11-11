@@ -11,7 +11,6 @@
 #define GLEW_STATIC //car on lie via gl32s.lib
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <C:\Users\antoi\OneDrive\Bureau\Projet J\Code\OpenGLProject1\OpenGLProject1\Shader.h>
 
 //GLM
 #include <glm.hpp>
