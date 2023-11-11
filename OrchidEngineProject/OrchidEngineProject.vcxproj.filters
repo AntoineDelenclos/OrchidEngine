@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{0974bd02-5932-4b74-bd9a-14542eff6827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\INTERNAL">
+      <UniqueIdentifier>{c3d0de3f-49bd-4ded-98e5-6bd251dbfc2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EXTERNAL">
+      <UniqueIdentifier>{1984e0e3-e11a-49ed-9e86-a0d88695fed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EXTERNAL\IMGUI">
+      <UniqueIdentifier>{f22c9311-a806-4935-a5bd-9b202d07f1e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EXTERNAL\IMPLOT">
+      <UniqueIdentifier>{942ab5fa-bd6d-4868-861e-3169857fe2db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXTERNAL">
+      <UniqueIdentifier>{217105d4-b217-4e12-af71-b759d3aa28c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\INTERNAL">
+      <UniqueIdentifier>{c1a64fa9-6b02-4b41-8aff-c2355a174174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXTERNAL\IMGUI">
+      <UniqueIdentifier>{8b6df944-71da-4380-af19-d1835d95ecab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXTERNAL\IMPLOT">
+      <UniqueIdentifier>{e053322e-f283-4d02-a19d-98cbb33cbfc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\INTERNAL\Entities">
+      <UniqueIdentifier>{21210049-7dee-449b-ae66-29d07d292025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\INTERNAL\Entities">
+      <UniqueIdentifier>{6f9b9e3b-c2d9-4639-9e3c-fe68a5bc2d0b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_demo.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_draw.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_impl_glfw.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_tables.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_widgets.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMPLOT\implot.cpp">
+      <Filter>Source Files\EXTERNAL\IMPLOT</Filter>
+    </ClCompile>
+    <ClCompile Include="EXTERNAL\IMPLOT\implot_items.cpp">
+      <Filter>Source Files\EXTERNAL\IMPLOT</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\Entities\CCube.cpp">
+      <Filter>Source Files\INTERNAL\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\Entities\CEntity.cpp">
+      <Filter>Source Files\INTERNAL\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\Entities\CLight.cpp">
+      <Filter>Source Files\INTERNAL\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CCamera.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CEngine.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CEngineInterface.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CException.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CInputs.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CLogs.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CParser.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CPostProcessing.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CRender.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\CShader.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\GlobalTools.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\main.cpp">
+      <Filter>Source Files\INTERNAL</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EXTERNAL\IMGUI\imconfig.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_impl_glfw.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_impl_opengl3.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_internal.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imstb_rectpack.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imstb_textedit.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imstb_truetype.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMPLOT\implot.h">
+      <Filter>Header Files\EXTERNAL\IMPLOT</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMPLOT\implot_internal.h">
+      <Filter>Header Files\EXTERNAL\IMPLOT</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\stb_image.h">
+      <Filter>Header Files\EXTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\CCube.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\CEntity.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\CLight.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CCamera.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CEngine.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CEngineInterface.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CException.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CInputs.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CLogs.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CParser.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CPostProcessing.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CRender.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\CShader.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\GlobalTools.h">
+      <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="INTERNAL\Shaders\core.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\core.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\light.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\light.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
