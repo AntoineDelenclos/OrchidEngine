@@ -42,15 +42,19 @@ CEngine::CEngine() {
 	//////////////////////////// AU DESSUS C EST DU VIEUX CODE AVEC LES TEXTURES
 
 	//Entities
-	iENGNumberOfEntities = 0;
+	for (int i = 0; i < TYPES_OF_ENTITIES; i++) {
+		piENGNumberOfEntities[i] = 0;
+	}
 	uiENGMaxNumberEntities = 1000;
 	ppentENGAllEntitiesList = new (CEntity(*[uiENGMaxNumberEntities]));
-	pentENGCubeEntitiesList = new (CEntity[uiENGMaxNumberEntities]);
-	ppentENGAllEntitiesList[0] = pentENGCubeEntitiesList;
+	pcubENGCubeEntitiesList = new (CCube[uiENGMaxNumberEntities]);
+	pligENGLightEntitiesList = new (CLight[uiENGMaxNumberEntities]);
+	ppentENGAllEntitiesList[0] = pcubENGCubeEntitiesList;
 	puiENGNextFreeEntitiesIDs = new(unsigned int[TYPES_OF_ENTITIES]); 
 	for (int boucle = 0; boucle < TYPES_OF_ENTITIES; boucle++) {
 		puiENGNextFreeEntitiesIDs[boucle] = 0;
 	}
+	uiENGNextFreeGlobalID = 0;
 	
 	//Textures
 	uiENGMaxNumberOfTextures = 10;
@@ -84,10 +88,11 @@ CEngine::CEngine() {
 CEngine::~CEngine() {
 	delete[] ptexENGAllTextures;
 	delete ppentENGAllEntitiesList;
-	delete[] pentENGCubeEntitiesList;
+	delete[] pcubENGCubeEntitiesList;
 	delete[] pstrENGTexturesPath;
 	delete[] puiENGVAOEngine;
 	delete[] puiENGVBOEngine;
+	delete[] puiENGNextFreeEntitiesIDs;
 }
 
 //////////// Getters & Setters ////////////////
@@ -98,14 +103,21 @@ void CEngine::ENGSetFpsLimit(int limit) {
 int CEngine::iENGGetFpsLimit() {
 	return iENGFpsLimiter;
 }
-void CEngine::ENGSetNumberOfEntities(int nb_of_ent) {
-	iENGNumberOfEntities = nb_of_ent;
+void CEngine::ENGSetNumberOfEntities(int type_of_entity, int nb_of_ent) {
+	piENGNumberOfEntities[type_of_entity] = nb_of_ent;
 }
-void CEngine::ENGIncreaseNumberOfEntities(int increase_value) {
-	iENGNumberOfEntities += increase_value;
+void CEngine::ENGIncreaseNumberOfEntities(int type_of_entity, int increase_value) {
+	piENGNumberOfEntities[type_of_entity] += increase_value;
 }
-int CEngine::iENGGetNumberOfEntities() {
-	return iENGNumberOfEntities;
+int CEngine::iENGGetNumberOfEntitiesTypeX(int type_of_entity) {
+	return piENGNumberOfEntities[type_of_entity];
+}
+int CEngine::iENGGetTotalNumberOfEntities() {
+	int total = 0;
+	for (int type = 0; type < TYPES_OF_ENTITIES; type++) {
+		total += piENGNumberOfEntities[type];
+	}
+	return total;
 }
 void CEngine::ENGSetNextFreeEntityID(int type_of_entity, unsigned int next_id) {
 	puiENGNextFreeEntitiesIDs[type_of_entity] = next_id;
@@ -115,6 +127,9 @@ void CEngine::ENGIncrementNextFreeEntityID(int type_of_entity, int val_of_inc) {
 }
 unsigned int CEngine::uiENGGetNextFreeEntityID(int type_of_entity) {
 	return puiENGNextFreeEntitiesIDs[type_of_entity];
+}
+unsigned int CEngine::uiENGGetNextFreeGlobalID() {
+	return uiENGNextFreeGlobalID;
 }
 void CEngine::ENGSetBrightness(GLfloat brightness) {
 	gfENGBrightness = brightness;
@@ -265,16 +280,16 @@ void CEngine::ENGFrameUpdate() {
 
 ////// ENTITY RELATED //////
 void CEngine::ENGAddCubeEntity(CCube cube) {
-	pentENGCubeEntitiesList[puiENGNextFreeEntitiesIDs[0]] = cube;
-	ENGIncreaseNumberOfEntities(1);
+	pcubENGCubeEntitiesList[puiENGNextFreeEntitiesIDs[0]] = cube;
+	ENGIncreaseNumberOfEntities(0, 1);
 	ENGIncrementNextFreeEntityID(0, 1);
 }
 
-/*void CEngine::ENGAddLightEntity(CLight light) {
+void CEngine::ENGAddLightEntity(CLight light) {
 	pligENGLightEntitiesList[puiENGNextFreeEntitiesIDs[2]] = light;
-	ENGIncreaseNumberOfEntities(1);
+	ENGIncreaseNumberOfEntities(2, 1);
 	ENGIncrementNextFreeEntityID(2, 1);
-}*/
+}
 
 ///// TEXTURES RELATED /////
 

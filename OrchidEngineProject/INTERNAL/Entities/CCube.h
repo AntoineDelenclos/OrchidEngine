@@ -3,6 +3,7 @@
 
 class CCube : public CEntity {
 public:
+    unsigned int uiCUBId;
 	const char* pcCUBVertexShaderName; //Nom du fichier, par exemple : "core.vs"
 	const char* pcCUBFragmentShaderName;
 	GLfloat* pgfCUBVertices;
@@ -69,7 +70,7 @@ public:
     void CUBDisplayNormalVectors();
 
 	CCube();
-    CCube(unsigned int id, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number);
-    CCube(unsigned int id, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency);
+    CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number);
+    CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency);
 	~CCube();
 };

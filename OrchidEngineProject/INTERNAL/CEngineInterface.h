@@ -24,7 +24,8 @@ public:
 	//New entity variables
 	bool bEGICreateEntitySubModule;
 	GLfloat* pgfEGINewEntityXYZPos;
-	unsigned int uiEGINewEntityID;
+	unsigned int uiEGINewEntityGlobalID;
+	unsigned int uiEGINewEntityTypeID;
 	const char* pcEGINewEntityVertexShaderName;
 	const char* pcEGINewEntityFragmentShaderName;
 	GLfloat gfEGINewEntityScaleRatio;

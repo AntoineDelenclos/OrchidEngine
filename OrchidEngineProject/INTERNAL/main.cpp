@@ -34,10 +34,6 @@ int main() {
     CEngineInterface engineInterface = CEngineInterface(engine);
     CRender render = CRender();
 
-    float lastX = engine.iENGScreenWidth / 2;
-    float lastY = engine.iENGScreenHeight / 2;
-
-
     //Cube light
     GLfloat cube_light[]{
         -0.05f, -0.05f, -0.05f,  0.0f, 0.0f,
@@ -83,12 +79,14 @@ int main() {
         -0.05f,  0.05f, -0.05f,  0.0f, 1.0f
     };
     glm::vec3 lightColor = glm::vec3(0.89f, 0.66f, 0.4f);
+    GLfloat lightColorFloat[3] = { 0.89f,0.66f,0.4f };
     GLfloat ambientIntensity = 0.3f;
     GLfloat transparency = 1.0f;
+    GLfloat diffuseStrength = 0.5f;
     GLfloat specularStrength = 0.5f;
     glm::vec3 pos_cube_light = { 1.2f, 1.0f, 2.0f };
-    glm::mat4 lightModel = glm::mat4(1.0f);
-    lightModel = glm::translate(lightModel, pos_cube_light);
+    //glm::mat4 lightModel = glm::mat4(1.0f);
+    //lightModel = glm::translate(lightModel, pos_cube_light);
     //move_cube_coordinates(cube_light, pos_cube_light);
     GLuint VAO_cube_light, VBO_cube_light;
     glGenVertexArrays(1, &VAO_cube_light);
@@ -163,16 +161,13 @@ int main() {
     int nb_frames = 0; //Permet de fixer des events en fonction du temps (par exemple au bout de 3 sec changer le sens de translation)
 
     glfwSetKeyCallback(engine.pwindowENGWindow, key_callback);
-    //glfwSetCursorPosCallback(engine.pwindowENGWindow, mouse_callback);
-    //glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);    
 
     glm::vec3 Position_test_1(1.3f, -1.3f, 1.f);
     glm::vec3 Position_test_2(-0.3f, 1.f, 0.8f);
     glm::vec3 Position_nulle(0.f, 0.f, 0.f);
 
-
-    CCube testCube_1 = CCube(engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "core.vs", "core.frag", 0);
-    CCube testCube_2 = CCube(engine.uiENGGetNextFreeEntityID(cube) + 1, Position_test_2, "core.vs", "core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
+    CCube testCube_1 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "core.vs", "core.frag", 0);
+    CCube testCube_2 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube) + 1, Position_test_2, "core.vs", "core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
 
     testCube_1.ENTChangeWorldPosition(testCube_1.vec3ENTWorldPosition);
     testCube_2.ENTChangeWorldPosition(testCube_2.vec3ENTWorldPosition);
@@ -185,6 +180,11 @@ int main() {
 
     engine.ENGAddCubeEntity(testCube_1);
     engine.ENGAddCubeEntity(testCube_2);
+
+    /*CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, lightColorFloat, ambientIntensity, diffuseStrength, specularStrength, "light.vs", "light.frag", 3);
+    testLight_1.ENTChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
+    render.RDRCreateMandatoryForEntity(engine, testLight_1, testLight_1.uiENTId);*/
+    //engine.ENGAddLightEntity(testLight_1);
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 

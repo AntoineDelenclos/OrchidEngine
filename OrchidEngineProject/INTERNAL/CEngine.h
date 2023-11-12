@@ -75,11 +75,12 @@ public:
 	GLuint iENGFrameNumber; //Numéro de la frame actuelle
 	
 	//Entities
-	int iENGNumberOfEntities; //A incrémenter et décrémenter en temps réel
+	int piENGNumberOfEntities[TYPES_OF_ENTITIES]; //A incrémenter et décrémenter en temps réel
 	unsigned int* puiENGNextFreeEntitiesIDs; //The next free id for each type of entity
+	unsigned int uiENGNextFreeGlobalID;
 	GLuint uiENGMaxNumberEntities;
 	CEntity** ppentENGAllEntitiesList;
-	CEntity* pentENGCubeEntitiesList; //A utiliser comme pour ptexENGAllTextures, un CEntity* peut etre mieux qu'un CEntity**
+	CCube* pcubENGCubeEntitiesList; //A utiliser comme pour ptexENGAllTextures, un CEntity* peut etre mieux qu'un CEntity**
 	CLight* pligENGLightEntitiesList;
 
 	//Test Light
@@ -110,12 +111,14 @@ public:
 	//Getters & Setters
 	void ENGSetFpsLimit(int limit);
 	int iENGGetFpsLimit();
-	void ENGSetNumberOfEntities(int nb_of_ent);
-	void ENGIncreaseNumberOfEntities(int value_of_inc);
-	int iENGGetNumberOfEntities();
+	void ENGSetNumberOfEntities(int type_of_entity, int nb_of_ent);
+	void ENGIncreaseNumberOfEntities(int type_of_entity, int value_of_inc);
+	int iENGGetNumberOfEntitiesTypeX(int type_of_entity);
+	int iENGGetTotalNumberOfEntities();
 	void ENGSetNextFreeEntityID(int type_of_entity, unsigned int next_id);
 	void ENGIncrementNextFreeEntityID(int type_of_entity, int value_of_inc);
 	unsigned int uiENGGetNextFreeEntityID(int type_of_entity);
+	unsigned int uiENGGetNextFreeGlobalID();
 	void ENGSetBrightness(GLfloat brightness);
 	GLfloat gfENGGetBrightness();
 	void ENGSetContrast(GLfloat contrast);

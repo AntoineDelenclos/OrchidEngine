@@ -18,7 +18,8 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
     pgfEGINewEntityXYZPos[0] = 0.f;
     pgfEGINewEntityXYZPos[1] = 0.f;
     pgfEGINewEntityXYZPos[2] = 0.f;
-    uiEGINewEntityID = 1;
+    uiEGINewEntityGlobalID = 0;
+    uiEGINewEntityTypeID = 0;
     gfEGINewEntityScaleRatio = 1.f;
     //New entity material values
     vec3EGINewEntityAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -158,10 +159,10 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
     ImGui::Checkbox("New entity", &bEGICreateEntitySubModule);
 
     ImGui::BeginChild("Entity panel", ImVec2(180, 0), true);
-    for (int nb_ent = 0; nb_ent < engine.iENGGetNumberOfEntities(); nb_ent++) {
+    for (int nb_ent = 0; nb_ent < engine.iENGGetTotalNumberOfEntities(); nb_ent++) {
         // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
         char label[128];
-        sprintf_s(label, engine.pentENGCubeEntitiesList[nb_ent].strENTName.c_str(), nb_ent);
+        sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(), nb_ent);
         if (ImGui::Selectable(label, selectedEntity == nb_ent))
             selectedEntity = nb_ent;
     }
@@ -216,10 +217,11 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             //Create a new entity with the set parameters and reset values to default ones
             entity_type_enum newEntityType;
             glm::vec3 newEntityWorldPosition(pgfEGINewEntityXYZPos[0], pgfEGINewEntityXYZPos[1], pgfEGINewEntityXYZPos[2]);
+            unsigned int newEntityGlobalId = engine.uiENGGetNextFreeGlobalID();
             if (entityTypeCombo == 0) {
                 newEntityType = cube;
-                unsigned int newEntityId = engine.uiENGGetNextFreeEntityID(newEntityType);
-                CCube newCube = CCube(newEntityId, newEntityWorldPosition, "core.vs", "core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
+                unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
+                CCube newCube = CCube(newEntityGlobalId, newEntityTypeId, newEntityWorldPosition, "core.vs", "core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
                 newCube.ENTChangeWorldPosition(newCube.vec3ENTWorldPosition);
                 newCube.ENTScaleEntitySize(gfEGINewEntityScaleRatio);
                 rdrEGIRender.RDRCreateMandatoryForEntity(engine, newCube, newCube.uiENTId);
@@ -227,7 +229,7 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             }
             if (entityTypeCombo == 1) {
                 newEntityType = light;
-                unsigned int newEntityId = engine.uiENGGetNextFreeEntityID(newEntityType);
+                unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
             }
         }
     }

@@ -14,15 +14,23 @@ void CRender::RDRCreateMandatoryForEntity(CEngine& engine, CEntity& entity, int 
     glBindBuffer(GL_ARRAY_BUFFER, engine.puiENGVBOEngine[number]);
     glBufferData(GL_ARRAY_BUFFER, entity.uiENTGetVerticesSize() * sizeof(GLfloat) * 4, entity.pgfENTVertices, GL_STATIC_DRAW);
 	//Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(0);
-	//Texture coordinates
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	//Logique : 2 pour l'id d'attribution, 2 pour le nombre d'infos par point (cf vertices), 8* car maintenant 8 infos par vertices par sommet
-	// et 3* car le 1er élément de texture coords commence au 3eme
-    glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
+	if (entity.enumENTType == cube) {
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(0);
+		//Texture coordinates
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		//Logique : 2 pour l'id d'attribution, 2 pour le nombre d'infos par point (cf vertices), 8* car maintenant 8 infos par vertices par sommet
+		// et 3* car le 1er élément de texture coords commence au 3eme
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+	}
+	if (entity.enumENTType == light) {
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+	}
     glBindVertexArray(0); //Unbind VAO
 }
 
@@ -52,9 +60,13 @@ void CRender::RDRLightRenderingOnEntity(CEngine& engine, CEntity& entity) {
 }
 
 void CRender::RDRRenderingEntities(CEngine& engine) {
-	for (int boucle_entity = 0; boucle_entity < engine.iENGGetNumberOfEntities(); boucle_entity++) {
-        RDREntityVerticesAndTextureRendering(engine, engine.pentENGCubeEntitiesList[boucle_entity], engine.pentENGCubeEntitiesList[boucle_entity].uiENTId);
-		RDRLightRenderingOnEntity(engine, engine.pentENGCubeEntitiesList[boucle_entity]);
+	for (int boucle_type = 0; boucle_type < TYPES_OF_ENTITIES; boucle_type++) {
+		if (boucle_type == cube) {
+			for (int boucle_cube = 0; boucle_cube < engine.iENGGetNumberOfEntitiesTypeX(cube); boucle_cube++) {
+				RDREntityVerticesAndTextureRendering(engine, engine.pcubENGCubeEntitiesList[boucle_cube], engine.pcubENGCubeEntitiesList[boucle_cube].uiENTId);
+				RDRLightRenderingOnEntity(engine, engine.pcubENGCubeEntitiesList[boucle_cube]);
+			}
+		}
 	}
 }
 
