@@ -84,11 +84,12 @@ public:
 	CLight* pligENGLightEntitiesList;
 
 	//Test Light
-	glm::vec3 vec3ENGTestLightColor;// = glm::vec3(0.89f, 0.66f, 0.53f);
+	GLfloat* pgfENGTestLightColor;
 	GLfloat gfENGTestLightAmbientIntensity;// = 0.4f;
 	GLfloat gfENGTestLightDiffuseStrength;
 	GLfloat gfENGTestLightSpecularStrength;
 	glm::vec3 vec3ENGTestLightPosition;// = { 1.2f, 1.0f, 2.0f };
+	CLight testLight;
 
 	//Textures
 	//List of all textures of the engine project

@@ -29,11 +29,11 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
     fEGINewEntityTransparency = 1.0f;
 
     
-    vec3EGITestLightColor = engine.vec3ENGTestLightColor;
-    vec3EGITestLightPosition = engine.vec3ENGTestLightPosition;
-    gfEGITestLightAmbientIntensity = engine.gfENGTestLightAmbientIntensity;
-    gfEGITestLightDiffuseStrength = engine.gfENGTestLightDiffuseStrength;
-    gfEGITestLightSpecularStrength = engine.gfENGTestLightSpecularStrength;
+    vec3EGITestLightColor = engine.testLight.vec3LIGColorLight;
+    vec3EGITestLightPosition = engine.testLight.vec3ENTWorldPosition;
+    gfEGITestLightAmbientIntensity = engine.testLight.gfLIGAmbientIntensity;
+    gfEGITestLightDiffuseStrength = engine.testLight.gfLIGDiffuseStrength;
+    gfEGITestLightSpecularStrength = engine.testLight.gfLIGSpecularStrength;
 
     pcEGINewEntityVertexShaderName = "core.vs";
     pcEGINewEntityFragmentShaderName = "core.frag";
@@ -144,6 +144,7 @@ void CEngineInterface::EGITexturesModule(CEngine &engine) {
         }
         if (ImGui::ImageButton((void*)(intptr_t)textureImage.guiTEXGetNumeroTexture(), ImVec2(SIZE_TEXTURE_INTERFACE, SIZE_TEXTURE_INTERFACE))) {
             iEGITextureNumber = boucle_tex;
+            std::cout << "Valeur texture = " << iEGITextureNumber << std::endl;
         }
     }
     ImGui::EndChild();
@@ -221,10 +222,11 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             if (entityTypeCombo == 0) {
                 newEntityType = cube;
                 unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
-                CCube newCube = CCube(newEntityGlobalId, newEntityTypeId, newEntityWorldPosition, "core.vs", "core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
-                newCube.ENTChangeWorldPosition(newCube.vec3ENTWorldPosition);
-                newCube.ENTScaleEntitySize(gfEGINewEntityScaleRatio);
-                rdrEGIRender.RDRCreateMandatoryForEntity(engine, newCube, newCube.uiENTId);
+                CCube newCube = CCube(newEntityGlobalId, newEntityTypeId, newEntityWorldPosition, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", iEGITextureNumber, vec3EGINewEntityAmbient, vec3EGINewEntityDiffuse, vec3EGINewEntitySpecular, fEGINewEntityShininess, fEGINewEntityTransparency);
+                newCube.CUBChangeWorldPosition(newCube.vec3ENTWorldPosition);
+                newCube.CUBScaleEntitySize(gfEGINewEntityScaleRatio);
+                std::cout << newCube.uiCUBId << std::endl;
+                rdrEGIRender.RDRCreateMandatoryForCube(engine, newCube, newCube.uiCUBId);
                 engine.ENGAddCubeEntity(newCube); //Modifier pour ajouter dans les listes correspondantes (séparer light et cube par ex.)
             }
             if (entityTypeCombo == 1) {
@@ -235,11 +237,14 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
     }
     ImGui::NextColumn();
     //Display informations about selected entity : ID, Position X,Y,Z et texture pour l'instant
-    if (selectedEntity == 0) {
-        ImGui::Text("A");
-    }
-    if (selectedEntity == 1) {
-        ImGui::Text("B");
+    for (int bEntDisp = 0; bEntDisp < engine.iENGGetTotalNumberOfEntities(); bEntDisp++) {
+        if (selectedEntity == bEntDisp) {
+            float X, Y, Z;
+            X = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.x;
+            Y = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.y;
+            Z = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.z;
+            ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", X, Y, Z);
+        }
     }
     ImGui::SameLine();
     ImGui::End();
@@ -278,11 +283,11 @@ void CEngineInterface::EGIInterfaceToEngine(CEngine &engine) {
     engine.ENGSetSaturation(gfEGISaturation);
     engine.ENGSetGamma(gfEGIGamma);
     engine.ENGSetNormRec(bEGINormeRec_709);
-    engine.vec3ENGTestLightColor = vec3EGITestLightColor;
-    engine.gfENGTestLightAmbientIntensity = gfEGITestLightAmbientIntensity;
-    engine.gfENGTestLightDiffuseStrength = gfEGITestLightDiffuseStrength;
-    engine.gfENGTestLightSpecularStrength = gfEGITestLightSpecularStrength;
-    engine.vec3ENGTestLightPosition = vec3EGITestLightPosition;
+    engine.testLight.vec3LIGColorLight = vec3EGITestLightColor;
+    engine.testLight.gfLIGAmbientIntensity = gfEGITestLightAmbientIntensity;
+    engine.testLight.gfLIGDiffuseStrength = gfEGITestLightDiffuseStrength;
+    engine.testLight.gfLIGSpecularStrength = gfEGITestLightSpecularStrength;
+    engine.testLight.vec3ENTWorldPosition = vec3EGITestLightPosition;
 }
 
 void CEngineInterface::EGIUpdate(CEngine &engine) { //Update the display of the interface at each frame time

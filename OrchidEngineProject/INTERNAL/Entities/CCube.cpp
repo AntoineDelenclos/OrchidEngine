@@ -22,18 +22,18 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	for (int i = 0; i < 288; i++) {
 		temp_vertices[i] = cubeVertices()[i];
 	}
-	pgfENTVertices = temp_vertices;
-	uiENTVerticesSize = 288;
+	pgfCUBVertices = temp_vertices;
+	uiCUBVerticesSize = 288;
 	vec3ENTWorldPosition = position;
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
 	uiENTTextureEngineNumber = texture_number;
 	//Material values
-	vec3ENTAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
-	vec3ENTDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-	vec3ENTSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-	fENTShininess = 0.25f;
-	fENTTransparency = 1.0f;
+	vec3CUBAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
+	vec3CUBDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	vec3CUBSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+	fCUBShininess = 0.25f;
+	fCUBTransparency = 1.0f;
 }
 
 CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency) {
@@ -46,8 +46,10 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	for (int i = 0; i < 288; i++) {
 		temp_vertices[i] = cubeVertices()[i];
 	}
-	pgfENTVertices = temp_vertices;
-	uiENTVerticesSize = 288;
+	pgfCUBVertices = temp_vertices;
+	uiCUBVerticesSize = 288;
+	//pgfENTVertices = temp_vertices;
+	//uiENTVerticesSize = 288;
 	vec3ENTWorldPosition = position;
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
@@ -75,4 +77,23 @@ void CCube::CUBNormalVectorCalculation() { //Utile pour le calcul de la lumière
 
 void CCube::CUBDisplayNormalVectors() {
 
+}
+
+//Déplace le cube en temps réel
+void CCube::CUBChangeWorldPosition(glm::vec3 new_position) {
+	vec3ENTWorldPosition = new_position;
+	for (int sommet = 0; sommet < 36; sommet++) {
+		for (int axe = 0; axe < 3; axe++) {
+			pgfCUBVertices[8 * sommet + axe] += new_position[axe];
+		}
+	}
+}
+
+//Scale la taille de l'entité en temps réel
+void CCube::CUBScaleEntitySize(GLfloat ratio) {
+	for (int sommet = 0; sommet < 36; sommet++) {
+		for (int axe = 0; axe < 3; axe++) {
+			pgfCUBVertices[8 * sommet + axe] *= ratio;
+		}
+	}
 }

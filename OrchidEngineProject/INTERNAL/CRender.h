@@ -13,8 +13,13 @@ public:
 	~CRender();
 
 	void RDRCreateMandatoryForEntity(CEngine& engine, CEntity& entity, int number);
-	void RDREntityVerticesAndTextureRendering(CEngine &engine, CEntity &entity, int number);
-	void RDRLightRenderingOnEntity(CEngine& engine, CEntity& entity);
+	void RDRCreateMandatoryForCube(CEngine& engine, CCube& cube_entity, int number);
+	void RDRCreateMandatoryForLight(CEngine& engine, CLight& light_entity, int number);
+
+	void RDREntityVerticesAndTextureRendering(CEngine &engine, CCube &cube_entity, int number);
+	void RDRLightRenderingOnCube(CEngine& engine, CCube& cube_entity);
 	void RDRRenderingEntities(CEngine &engine);
 	void RDRPostProcess(CEngine &engine);
+
+	void RDRRenderingCubes(CEngine& engine);
 };

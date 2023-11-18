@@ -68,11 +68,15 @@ CEngine::CEngine() {
 
 
 	//TestLight
-	vec3ENGTestLightColor = glm::vec3(0.89f, 0.66f, 0.4f); //coucher de soleil
+	pgfENGTestLightColor = new(GLfloat[3]);
+	pgfENGTestLightColor[0] = 0.89f; //coucher de soleil
+	pgfENGTestLightColor[1] = 0.66f;
+	pgfENGTestLightColor[2] = 0.4f;
 	gfENGTestLightAmbientIntensity = 1.0f;
 	gfENGTestLightDiffuseStrength = 1.0f;
 	gfENGTestLightSpecularStrength = 1.0f;
 	vec3ENGTestLightPosition = { 1.2f, 1.0f, 2.0f };
+	testLight = CLight(1, 1, vec3ENGTestLightPosition, pgfENGTestLightColor, gfENGTestLightAmbientIntensity, gfENGTestLightDiffuseStrength, gfENGTestLightSpecularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
 
 	//Post-process
 	gfENGBrightness = 0.0f;
@@ -251,11 +255,11 @@ void CEngine::ENGCameraUpdate() {
 }
 
 void CEngine::ENGLightUpdate() {
-	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.color"), vec3ENGTestLightColor.x, vec3ENGTestLightColor.y, vec3ENGTestLightColor.z);
-	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.position"), vec3ENGTestLightPosition.x, vec3ENGTestLightPosition.y, vec3ENGTestLightPosition.z);
-	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.ambientIntensity"), gfENGTestLightAmbientIntensity, gfENGTestLightAmbientIntensity, gfENGTestLightAmbientIntensity);
-	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.diffuseStrength"), gfENGTestLightDiffuseStrength, gfENGTestLightDiffuseStrength, gfENGTestLightDiffuseStrength);
-	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.specularStrength"), gfENGTestLightSpecularStrength, gfENGTestLightSpecularStrength, gfENGTestLightSpecularStrength);
+	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.color"), testLight.vec3LIGColorLight.x, testLight.vec3LIGColorLight.y, testLight.vec3LIGColorLight.z);
+	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.position"), testLight.vec3ENTWorldPosition.x, testLight.vec3ENTWorldPosition.y, testLight.vec3ENTWorldPosition.z);
+	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.ambientIntensity"), testLight.gfLIGAmbientIntensity, testLight.gfLIGAmbientIntensity, testLight.gfLIGAmbientIntensity);
+	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.diffuseStrength"), testLight.gfLIGDiffuseStrength, testLight.gfLIGDiffuseStrength, testLight.gfLIGDiffuseStrength);
+	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.specularStrength"), testLight.gfLIGSpecularStrength, testLight.gfLIGSpecularStrength, testLight.gfLIGSpecularStrength);
 }
 
 void CEngine::ENGFrameUpdate() {

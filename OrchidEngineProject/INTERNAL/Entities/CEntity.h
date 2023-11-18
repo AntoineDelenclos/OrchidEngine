@@ -27,21 +27,10 @@ public:
 	//On va translate de cette position après l'avoir dessiné en (0,0,0) pour éviter des soucis avec les transformations matricielles
 	glm::vec3 vec3ENTWorldPosition;
 
-
-
-
 	const char* pcENTVertexShaderName; //Nom du fichier, par exemple : "core.vs"
 	const char* pcENTFragmentShaderName;
     GLfloat* pgfENTVertices;
-    unsigned int uiENTVerticesSize;
-    
-    //Material values
-    glm::vec3 vec3ENTAmbient;
-    glm::vec3 vec3ENTDiffuse;
-    glm::vec3 vec3ENTSpecular;
-    float fENTShininess;
-    float fENTTransparency;
-    
+    unsigned int uiENTVerticesSize; 
 
     //On peut stocker le numéro de la texture dans l'ensemble des textures ? Et si on fait une liste sélectionnable si des textures
     // ca devrait fonctionner

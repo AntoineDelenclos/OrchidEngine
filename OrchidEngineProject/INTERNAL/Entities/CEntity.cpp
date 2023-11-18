@@ -90,11 +90,11 @@ CEntity::CEntity(entity_type_enum type, unsigned int id, glm::vec3 position, con
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
 	uiENTTextureEngineNumber = texture_number;
-	vec3ENTAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
+	/*vec3ENTAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
 	vec3ENTDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 	vec3ENTSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
 	fENTShininess = 0.25f;
-	fENTTransparency = 1.0f;
+	fENTTransparency = 1.0f;*/
 }
 
 CEntity::CEntity(entity_type_enum type, unsigned int id, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency) {
@@ -141,11 +141,11 @@ CEntity::CEntity(entity_type_enum type, unsigned int id, glm::vec3 position, con
 	pcENTFragmentShaderName = fragFile;
 	uiENTTextureEngineNumber = texture_number;
 	//Material values
-	vec3ENTAmbient = ambient;
+	/*vec3ENTAmbient = ambient;
 	vec3ENTDiffuse = diffuse;
 	vec3ENTSpecular = specular;
 	fENTShininess = shininess;
-	fENTTransparency = transparency;
+	fENTTransparency = transparency;*/
 }
 
 CEntity::~CEntity() {

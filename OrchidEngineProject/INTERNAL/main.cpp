@@ -166,24 +166,21 @@ int main() {
     glm::vec3 Position_test_2(-0.3f, 1.f, 0.8f);
     glm::vec3 Position_nulle(0.f, 0.f, 0.f);
 
-    CCube testCube_1 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "core.vs", "core.frag", 0);
-    CCube testCube_2 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube) + 1, Position_test_2, "core.vs", "core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
-
-    testCube_1.ENTChangeWorldPosition(testCube_1.vec3ENTWorldPosition);
-    testCube_2.ENTChangeWorldPosition(testCube_2.vec3ENTWorldPosition);
-
-    testCube_1.ENTScaleEntitySize(1.5f);
-    testCube_2.ENTScaleEntitySize(3.f);
-
-    render.RDRCreateMandatoryForEntity(engine, testCube_1, testCube_1.uiENTId); //Ici le numero correspond au numero de l'entité et donc de la paire (VAO,VBO)
-    render.RDRCreateMandatoryForEntity(engine, testCube_2, testCube_2.uiENTId);
-
+    CCube testCube_1 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", 0);
+    testCube_1.CUBChangeWorldPosition(testCube_1.vec3ENTWorldPosition);
+    testCube_1.CUBScaleEntitySize(1.5f);
+    render.RDRCreateMandatoryForCube(engine, testCube_1, testCube_1.uiCUBId); //Ici le numero correspond au numero de l'entité et donc de la paire (VAO,VBO)
     engine.ENGAddCubeEntity(testCube_1);
+
+    CCube testCube_2 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube) , Position_test_2, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
+    testCube_2.CUBChangeWorldPosition(testCube_2.vec3ENTWorldPosition);
+    testCube_2.CUBScaleEntitySize(3.f);
+    render.RDRCreateMandatoryForCube(engine, testCube_2, testCube_2.uiCUBId);
     engine.ENGAddCubeEntity(testCube_2);
 
-    /*CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, lightColorFloat, ambientIntensity, diffuseStrength, specularStrength, "light.vs", "light.frag", 3);
-    testLight_1.ENTChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
-    render.RDRCreateMandatoryForEntity(engine, testLight_1, testLight_1.uiENTId);*/
+    //CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, lightColorFloat, ambientIntensity, diffuseStrength, specularStrength, "light.vs", "light.frag", 3);
+    //testLight_1.ENTChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
+    //render.RDRCreateMandatoryForLight(engine, testLight_1, testLight_1.uiENTId);
     //engine.ENGAddLightEntity(testLight_1);
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
@@ -192,6 +189,9 @@ int main() {
         render.RDRPostProcess(engine);
 
         engine.ENGLightUpdate();
+        
+        
+        
         //IMGUI ELEMENTS
         /////// OLD CODE (BEFORE ENGINE UPDATE) ///////
         /*ImGui_ImplOpenGL3_NewFrame();
@@ -264,7 +264,11 @@ int main() {
         glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_light)/20);
         glBindVertexArray(0);*/
 
-        engine.shaENGCoreShader.SHAUse();
+        //engine.shaENGCoreShader.SHAUse();
+        
+        
+        
+        
         //Maintenant on peut passer les informations
         //int texture_value_location = glGetUniformLocation(ourShader.Program, "textureValue");
         //glUniform1i(texture_value_location, texture_value);
@@ -372,7 +376,8 @@ int main() {
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
         glUniformMatrix4fv(movLoc, 1, GL_FALSE, glm::value_ptr(movement));
 
-        render.RDRRenderingEntities(engine);
+        //render.RDRRenderingEntities(engine);
+        render.RDRRenderingCubes(engine);
 
         glfwSwapBuffers(engine.pwindowENGWindow); //Swap front and back buffers
 
