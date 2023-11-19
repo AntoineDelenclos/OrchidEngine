@@ -21,8 +21,8 @@ CLight::CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position
 	for (int i = 0; i < 180; i++) {
 		temp_vertices[i] = lightVertices()[i];
 	}
-	pgfENTVertices = temp_vertices;
-	uiENTVerticesSize = 180;
+	pgfLIGVertices = temp_vertices;
+	uiLIGVerticesSize = 180;
 	vec3ENTWorldPosition = position;
 	vec3LIGColorLight.x = light_color[0];
 	vec3LIGColorLight.y = light_color[1];
@@ -37,4 +37,21 @@ CLight::CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position
 
 CLight::~CLight() {
 
+}
+
+void CLight::LIGChangeWorldPosition(glm::vec3 new_position) {
+	vec3ENTWorldPosition = new_position;
+	for (int sommet = 0; sommet < 36; sommet++) {
+		for (int axe = 0; axe < 3; axe++) {
+			pgfLIGVertices[5 * sommet + axe] += new_position[axe];
+		}
+	}
+}
+
+void CLight::LIGScaleEntitySize(GLfloat ratio) {
+	for (int sommet = 0; sommet < 36; sommet++) {
+		for (int axe = 0; axe < 3; axe++) {
+			pgfLIGVertices[5 * sommet + axe] *= ratio;
+		}
+	}
 }

@@ -6,6 +6,8 @@
 class CLight : public CEntity {
 public:
     unsigned int uiLIGId;
+    GLfloat* pgfLIGVertices;
+    unsigned int uiLIGVerticesSize;
 	//light_type_enum enumLIGType;
 	glm::vec3 vec3LIGColorLight;
 	GLfloat gfLIGAmbientIntensity;
@@ -62,4 +64,7 @@ public:
 	CLight();
     CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position, GLfloat* light_color, GLfloat ambient, GLfloat diffuse, GLfloat specular, const char* vsFile, const char* fragFile, int texture_number);
 	~CLight();
+
+    void LIGChangeWorldPosition(glm::vec3 new_position);
+    void LIGScaleEntitySize(GLfloat ratio);
 };

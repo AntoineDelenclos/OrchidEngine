@@ -78,13 +78,13 @@ int main() {
         -0.05f,  0.05f,  0.05f,  0.0f, 0.0f,
         -0.05f,  0.05f, -0.05f,  0.0f, 1.0f
     };
-    glm::vec3 lightColor = glm::vec3(0.89f, 0.66f, 0.4f);
+    glm::vec3 lightColor = glm::vec3(0.f, 0.66f, 0.4f);
     GLfloat lightColorFloat[3] = { 0.89f,0.66f,0.4f };
     GLfloat ambientIntensity = 0.3f;
     GLfloat transparency = 1.0f;
     GLfloat diffuseStrength = 0.5f;
     GLfloat specularStrength = 0.5f;
-    glm::vec3 pos_cube_light = { 1.2f, 1.0f, 2.0f };
+    glm::vec3 pos_cube_light = { 1.3f, 1.3f, 1.3f };
     //glm::mat4 lightModel = glm::mat4(1.0f);
     //lightModel = glm::translate(lightModel, pos_cube_light);
     //move_cube_coordinates(cube_light, pos_cube_light);
@@ -134,7 +134,14 @@ int main() {
     glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightAmbientIntensity"), ambientIntensity);
     glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightSpecularStrength"), specularStrength);
     glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "transparency"), transparency);*/
-
+    
+    
+    
+    //engine.shaENGLightShader.SHAUse();
+    //glUniform1i(glGetUniformLocation(engine.shaENGLightShader.Program, "ourTexture"), 0);
+    
+    
+    
     //lightCubeShader.Use();
     //glUniformMatrix4fv(glGetUniformLocation(lightCubeShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 
@@ -178,10 +185,19 @@ int main() {
     render.RDRCreateMandatoryForCube(engine, testCube_2, testCube_2.uiCUBId);
     engine.ENGAddCubeEntity(testCube_2);
 
-    //CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, lightColorFloat, ambientIntensity, diffuseStrength, specularStrength, "light.vs", "light.frag", 3);
-    //testLight_1.ENTChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
-    //render.RDRCreateMandatoryForLight(engine, testLight_1, testLight_1.uiENTId);
-    //engine.ENGAddLightEntity(testLight_1);
+    GLfloat ENTITYlightColorFloat_1[3] = { 1.f,0.f,1.f };
+
+    CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, ENTITYlightColorFloat_1, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_1.LIGChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
+    render.RDRCreateMandatoryForLight(engine, testLight_1, testLight_1.uiLIGId);
+    engine.ENGAddLightEntity(testLight_1);
+
+    GLfloat ENTITYlightColorFloat_2[3] = { 0.f,0.5f,0.f };
+
+    CLight testLight_2 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), Position_test_1, ENTITYlightColorFloat_2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_2.LIGChangeWorldPosition(testLight_2.vec3ENTWorldPosition);
+    render.RDRCreateMandatoryForLight(engine, testLight_2, testLight_2.uiLIGId);
+    engine.ENGAddLightEntity(testLight_2);
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 
@@ -369,15 +385,27 @@ int main() {
         GLint viewLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "view");
         GLint projLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "projection");
         GLint movLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "movement");
-        
+        engine.shaENGCoreShader.SHAUse();
         //On les passe aux shaders
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMView));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
         glUniformMatrix4fv(movLoc, 1, GL_FALSE, glm::value_ptr(movement));
 
+        //LIGHT SHADERS
+        GLint modelLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "model");
+        GLint viewLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "view");
+        GLint projLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "projection");
+        GLint movLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "movement");
+        engine.shaENGLightShader.SHAUse();
+        glUniformMatrix4fv(modelLightLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMView));
+        glUniformMatrix4fv(projLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
+        glUniformMatrix4fv(movLightLoc, 1, GL_FALSE, glm::value_ptr(movement));
+
         //render.RDRRenderingEntities(engine);
         render.RDRRenderingCubes(engine);
+        render.RDRRenderingLightCubes(engine);
 
         glfwSwapBuffers(engine.pwindowENGWindow); //Swap front and back buffers
 

@@ -50,6 +50,7 @@ CEngine::CEngine() {
 	pcubENGCubeEntitiesList = new (CCube[uiENGMaxNumberEntities]);
 	pligENGLightEntitiesList = new (CLight[uiENGMaxNumberEntities]);
 	ppentENGAllEntitiesList[0] = pcubENGCubeEntitiesList;
+	ppentENGAllEntitiesList[1] = pligENGLightEntitiesList;
 	puiENGNextFreeEntitiesIDs = new(unsigned int[TYPES_OF_ENTITIES]); 
 	for (int boucle = 0; boucle < TYPES_OF_ENTITIES; boucle++) {
 		puiENGNextFreeEntitiesIDs[boucle] = 0;
@@ -63,8 +64,10 @@ CEngine::CEngine() {
 
 	iENGMaxNumberVAO = 100;
 	iENGMaxNumberVBO = 100;
-	puiENGVAOEngine = new (GLuint[iENGMaxNumberVAO]);
-	puiENGVBOEngine = new (GLuint[iENGMaxNumberVBO]);
+	puiENGVAOCubesEngine = new (GLuint[iENGMaxNumberVAO]);
+	puiENGVBOCubesEngine = new (GLuint[iENGMaxNumberVBO]);
+	puiENGVAOLightsEngine = new (GLuint[iENGMaxNumberVAO]);
+	puiENGVBOLightsEngine = new (GLuint[iENGMaxNumberVBO]);
 
 
 	//TestLight
@@ -93,9 +96,12 @@ CEngine::~CEngine() {
 	delete[] ptexENGAllTextures;
 	delete ppentENGAllEntitiesList;
 	delete[] pcubENGCubeEntitiesList;
+	delete[] pligENGLightEntitiesList;
 	delete[] pstrENGTexturesPath;
-	delete[] puiENGVAOEngine;
-	delete[] puiENGVBOEngine;
+	delete[] puiENGVAOCubesEngine;
+	delete[] puiENGVBOCubesEngine;
+	delete[] puiENGVAOLightsEngine;
+	delete[] puiENGVBOLightsEngine;
 	delete[] puiENGNextFreeEntitiesIDs;
 }
 
@@ -255,6 +261,7 @@ void CEngine::ENGCameraUpdate() {
 }
 
 void CEngine::ENGLightUpdate() {
+	shaENGCoreShader.SHAUse();
 	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.color"), testLight.vec3LIGColorLight.x, testLight.vec3LIGColorLight.y, testLight.vec3LIGColorLight.z);
 	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.position"), testLight.vec3ENTWorldPosition.x, testLight.vec3ENTWorldPosition.y, testLight.vec3ENTWorldPosition.z);
 	glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, "light.ambientIntensity"), testLight.gfLIGAmbientIntensity, testLight.gfLIGAmbientIntensity, testLight.gfLIGAmbientIntensity);

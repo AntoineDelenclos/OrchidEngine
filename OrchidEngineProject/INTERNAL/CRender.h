@@ -16,10 +16,12 @@ public:
 	void RDRCreateMandatoryForCube(CEngine& engine, CCube& cube_entity, int number);
 	void RDRCreateMandatoryForLight(CEngine& engine, CLight& light_entity, int number);
 
-	void RDREntityVerticesAndTextureRendering(CEngine &engine, CCube &cube_entity, int number);
+	void RDRCubeVerticesAndTextureRendering(CEngine &engine, CCube &cube_entity, int number);
+	void RDRLightVerticesAndTextureRendering(CEngine& engine, CLight& light_entity, int number);
 	void RDRLightRenderingOnCube(CEngine& engine, CCube& cube_entity);
 	void RDRRenderingEntities(CEngine &engine);
 	void RDRPostProcess(CEngine &engine);
 
 	void RDRRenderingCubes(CEngine& engine);
+	void RDRRenderingLightCubes(CEngine& engine);
 };

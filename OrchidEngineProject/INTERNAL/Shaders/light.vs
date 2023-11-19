@@ -1,11 +1,18 @@
 #version 330 core
+
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoord;
+
 out vec2 TexCoord;
+out vec3 crntPos;
 
 uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 movement;
 
 void main() {
-	gl_Position = model * vec4(position,1.0f);
-	TexCoord=vec2(texCoord.x, 1.0 - texCoord.y);
+	gl_Position = projection * view * movement * model * vec4(position,1.0);
+	TexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+	crntPos = vec3(model * vec4(position, 1.0));
 }

@@ -103,8 +103,10 @@ public:
 
 	int iENGMaxNumberVAO;
 	int iENGMaxNumberVBO;
-	GLuint* puiENGVAOEngine;
-	GLuint* puiENGVBOEngine;
+	GLuint* puiENGVAOCubesEngine;
+	GLuint* puiENGVBOCubesEngine;
+	GLuint* puiENGVAOLightsEngine;
+	GLuint* puiENGVBOLightsEngine;
 
 	CEngine();
 	~CEngine();

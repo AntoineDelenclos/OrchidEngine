@@ -167,6 +167,12 @@ void CEntity::ENTChangeWorldPosition(glm::vec3 new_position) {
 				pgfENTVertices[8 * sommet + axe] += new_position[axe];
 			}
 		}
+	case light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] += new_position[axe];
+			}
+		}
 	//default: ?
 	}
 }
@@ -178,6 +184,12 @@ void CEntity::ENTScaleEntitySize(GLfloat ratio) {
 		for (int sommet = 0; sommet < 36; sommet++) {
 			for (int axe = 0; axe < 3; axe++) {
 				pgfENTVertices[8 * sommet + axe] *= ratio;
+			}
+		}
+	case light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] *= ratio;
 			}
 		}
 	}
