@@ -34,50 +34,6 @@ int main() {
     CEngineInterface engineInterface = CEngineInterface(engine);
     CRender render = CRender();
 
-    //Cube light
-    GLfloat cube_light[]{
-        -0.05f, -0.05f, -0.05f,  0.0f, 0.0f,
-        0.05f, -0.05f, -0.05f,  1.0f, 0.0f,
-        0.05f,  0.05f, -0.05f,  1.0f, 1.0f,
-        0.05f,  0.05f, -0.05f,  1.0f, 1.0f,
-        -0.05f,  0.05f, -0.05f,  0.0f, 1.0f,
-        -0.05f, -0.05f, -0.05f,  0.0f, 0.0f,
-
-        -0.05f, -0.05f,  0.05f,  0.0f, 0.0f,
-        0.05f, -0.05f,  0.05f,  1.0f, 0.0f,
-        0.05f,  0.05f,  0.05f,  1.0f, 1.0f,
-        0.05f,  0.05f,  0.05f,  1.0f, 1.0f,
-        -0.05f,  0.05f,  0.05f,  0.0f, 1.0f,
-        -0.05f, -0.05f,  0.05f,  0.0f, 0.0f,
-
-        -0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-        -0.05f,  0.05f, -0.05f,  1.0f, 1.0f,
-        -0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-        -0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-        -0.05f, -0.05f,  0.05f,  0.0f, 0.0f,
-        -0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-
-        0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-        0.05f,  0.05f, -0.05f,  1.0f, 1.0f,
-        0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-        0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-        0.05f, -0.05f,  0.05f,  0.0f, 0.0f,
-        0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-
-        -0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-        0.05f, -0.05f, -0.05f,  1.0f, 1.0f,
-        0.05f, -0.05f,  0.05f,  1.0f, 0.0f,
-        0.05f, -0.05f,  0.05f,  1.0f, 0.0f,
-        -0.05f, -0.05f,  0.05f,  0.0f, 0.0f,
-        -0.05f, -0.05f, -0.05f,  0.0f, 1.0f,
-
-        -0.05f,  0.05f, -0.05f,  0.0f, 1.0f,
-        0.05f,  0.05f, -0.05f,  1.0f, 1.0f,
-        0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-        0.05f,  0.05f,  0.05f,  1.0f, 0.0f,
-        -0.05f,  0.05f,  0.05f,  0.0f, 0.0f,
-        -0.05f,  0.05f, -0.05f,  0.0f, 1.0f
-    };
     glm::vec3 lightColor = glm::vec3(0.f, 0.66f, 0.4f);
     GLfloat lightColorFloat[3] = { 0.89f,0.66f,0.4f };
     GLfloat ambientIntensity = 0.3f;
@@ -88,65 +44,13 @@ int main() {
     //glm::mat4 lightModel = glm::mat4(1.0f);
     //lightModel = glm::translate(lightModel, pos_cube_light);
     //move_cube_coordinates(cube_light, pos_cube_light);
-    GLuint VAO_cube_light, VBO_cube_light;
-    glGenVertexArrays(1, &VAO_cube_light);
-    glGenBuffers(1, &VBO_cube_light);
-    glBindVertexArray(VAO_cube_light);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_cube_light);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizeof(cube_light) / 4, cube_light, GL_STATIC_DRAW); //Le static draw fait que nous ne pouvons pas allouer plus d'espaces à ce VAO quand ca run
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0); 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-    glBindVertexArray(0);
-
-    GLuint VAO_light;
-    glGenVertexArrays(1, &VAO_light);
-    glBindVertexArray(VAO_light);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-    glBindVertexArray(0);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //TEXTURE 2 (for light)
-    GLuint texture2;
-    unsigned char* image2;
-    int width2, height2;
-    int nrChannels2;
-    /*glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    image2 = stbi_load("../../../Assets/white_light_texture.png", &width2, &height2, &nrChannels2, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, image2);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(image2);
-    */
+    
     engine.shaENGCoreShader.SHAUse();
     glUniform1i(glGetUniformLocation(engine.shaENGCoreShader.Program, "ourTexture"), 0);
     glUniform3f(glGetUniformLocation(engine.shaENGCoreShader.Program, "viewPos"), engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.x, engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.y, engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.z);
-    /*glUniform3f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightColor"), lightColor.x, lightColor.y, lightColor.z);
-    glUniform3f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightPos"), pos_cube_light.x, pos_cube_light.y, pos_cube_light.z);
-    glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightAmbientIntensity"), ambientIntensity);
-    glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "lightSpecularStrength"), specularStrength);
-    glUniform1f(glGetUniformLocation(engine.shaENGCoreShader.Program, "transparency"), transparency);*/
     
-    
-    
-    //engine.shaENGLightShader.SHAUse();
-    //glUniform1i(glGetUniformLocation(engine.shaENGLightShader.Program, "ourTexture"), 0);
-    
-    
-    
-    //lightCubeShader.Use();
-    //glUniformMatrix4fv(glGetUniformLocation(lightCubeShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-
-    //lightShader.Use();
-    //glUniform4f(glGetUniformLocation(lightShader.Program, "lightcolor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 
     //glBindTexture(GL_TEXTURE_2D, 0);
     //gluLookAt(0.9f, 0.9f, 0.9f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -252,16 +156,6 @@ int main() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         */
 
-
-
-        //On active maintenant les textures avant d'utiliser les shaders
-        /*glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        */
-
         //Permet de fusionner les textures
         /*if (glfwGetKey(window, GLFW_KEY_Y)) {
             glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 0);
@@ -270,21 +164,7 @@ int main() {
         */
         //glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-        //Draw light cube
-        /*glUniform1i(texture_value_location, 2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-        glBindVertexArray(VAO_light);
-        glDrawArrays(GL_TRIANGLES, 0, sizeof(cube_light)/20);
-        glBindVertexArray(0);*/
-
-        //engine.shaENGCoreShader.SHAUse();
-        
-        
-        
-        
+///////////////////////////////////////////////////////////////////////////////////////////////               
         //Maintenant on peut passer les informations
         //int texture_value_location = glGetUniformLocation(ourShader.Program, "textureValue");
         //glUniform1i(texture_value_location, texture_value);
