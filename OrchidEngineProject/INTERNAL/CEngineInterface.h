@@ -37,6 +37,8 @@ public:
 	float fEGINewEntityShininess;
 	float fEGINewEntityTransparency;
 
+	//Entity modifications via interface
+	float fEGINewX, fEGINewY, fEGINewZ;
 
 	CRender rdrEGIRender;
 	//New light variables

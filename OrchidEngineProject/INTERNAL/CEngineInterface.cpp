@@ -35,6 +35,9 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
     gfEGITestLightDiffuseStrength = engine.testLight.gfLIGDiffuseStrength;
     gfEGITestLightSpecularStrength = engine.testLight.gfLIGSpecularStrength;
 
+    //Entity modifications via interface
+    fEGINewX = 0.f; fEGINewY = 0.f; fEGINewZ = 0.f;
+
     pcEGINewEntityVertexShaderName = "core.vs";
     pcEGINewEntityFragmentShaderName = "core.frag";
     iEGITextureNumber = 0;
@@ -163,9 +166,27 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
     for (int nb_ent = 0; nb_ent < engine.iENGGetTotalNumberOfEntities(); nb_ent++) {
         // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
         char label[128];
-        sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(), nb_ent);
-        if (ImGui::Selectable(label, selectedEntity == nb_ent))
+        if (nb_ent < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+            sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(),  nb_ent);
+        }
+        if (nb_ent >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+            sprintf_s(label, engine.pligENGLightEntitiesList[nb_ent-engine.iENGGetNumberOfEntitiesTypeX(cube)].strENTName.c_str(), nb_ent);
+        }
+        if (ImGui::Selectable(label, selectedEntity == nb_ent)) {
             selectedEntity = nb_ent;
+            if (selectedEntity < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+                unsigned int pos_cub = selectedEntity;
+                fEGINewX = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
+                fEGINewY = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
+                fEGINewZ = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
+            }
+            if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+                unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
+                fEGINewX = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
+                fEGINewY = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
+                fEGINewZ = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
+            }
+        }
     }
     ImGui::EndChild();
 
@@ -179,7 +200,7 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
         for (int boucle_axe = 0; boucle_axe < 3; boucle_axe++) {
             std::string axisText = axisSliders[boucle_axe];
             axisText += " Axis";
-            ImGui::SliderFloat(axisText.c_str(), &pgfEGINewEntityXYZPos[boucle_axe], -100.0f, 100.0f); //On peut mettre -1000 1000
+            ImGui::SliderFloat(axisText.c_str(), &pgfEGINewEntityXYZPos[boucle_axe], -10.0f, 10.0f); //On peut mettre -1000 1000
             ImGui::SameLine();
             std::string axisRound = axisSliders[boucle_axe];
             axisRound += " Round value";
@@ -237,14 +258,37 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
     }
     ImGui::NextColumn();
     //Display informations about selected entity : ID, Position X,Y,Z et texture pour l'instant
-    for (int bEntDisp = 0; bEntDisp < engine.iENGGetTotalNumberOfEntities(); bEntDisp++) {
-        if (selectedEntity == bEntDisp) {
-            float X, Y, Z;
-            X = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.x;
-            Y = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.y;
-            Z = engine.pcubENGCubeEntitiesList[bEntDisp].vec3ENTWorldPosition.z;
-            ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", X, Y, Z);
+    if (selectedEntity < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+        float Xc, Yc, Zc;
+        unsigned int pos_cub = selectedEntity;
+        ImGui::SliderFloat("newX", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("newY", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("newZ", &fEGINewZ, -10.f, 10.f);
+        Xc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
+        Yc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
+        Zc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
+        float difXc = fEGINewX - Xc; float difYc = fEGINewY - Yc; float difZc = fEGINewZ - Zc;
+        if (difXc != 0 || difYc != 0 || difZc != 0) {
+            engine.pcubENGCubeEntitiesList[pos_cub].CUBChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
+            rdrEGIRender.RDRCreateMandatoryForCube(engine, engine.pcubENGCubeEntitiesList[pos_cub], engine.pcubENGCubeEntitiesList[pos_cub].uiCUBId);
         }
+        ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xc, Yc, Zc);
+    }
+    if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+        float Xl, Yl, Zl;
+        unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
+        ImGui::SliderFloat("newX", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("newY", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("newZ", &fEGINewZ, -10.f, 10.f);
+        Xl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
+        Yl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
+        Zl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
+        float difXl = fEGINewX - Xl; float difYl = fEGINewY - Yl; float difZl = fEGINewZ - Zl;
+        if (difXl != 0 || difYl != 0 || difZl != 0) {
+            engine.pligENGLightEntitiesList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGLightEntitiesList[pos_lig], engine.pligENGLightEntitiesList[pos_lig].uiLIGId);
+        }
+        ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xl, Yl, Zl);
     }
     ImGui::SameLine();
     ImGui::End();

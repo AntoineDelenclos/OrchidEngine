@@ -73,33 +73,33 @@ int main() {
 
     glfwSetKeyCallback(engine.pwindowENGWindow, key_callback);
 
-    glm::vec3 Position_test_1(1.3f, -1.3f, 1.f);
+    glm::vec3 Position_test_1(1.f, 0.f, 0.f);
     glm::vec3 Position_test_2(-0.3f, 1.f, 0.8f);
     glm::vec3 Position_nulle(0.f, 0.f, 0.f);
 
     CCube testCube_1 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube), Position_nulle, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", 0);
-    testCube_1.CUBChangeWorldPosition(testCube_1.vec3ENTWorldPosition);
-    testCube_1.CUBScaleEntitySize(1.5f);
+    testCube_1.CUBFirstTimeSetVerticesPosition();
+    testCube_1.CUBScaleEntitySize(1.f);
     render.RDRCreateMandatoryForCube(engine, testCube_1, testCube_1.uiCUBId); //Ici le numero correspond au numero de l'entité et donc de la paire (VAO,VBO)
     engine.ENGAddCubeEntity(testCube_1);
 
-    CCube testCube_2 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube) , Position_test_2, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
-    testCube_2.CUBChangeWorldPosition(testCube_2.vec3ENTWorldPosition);
-    testCube_2.CUBScaleEntitySize(3.f);
+    CCube testCube_2 = CCube(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(cube) , Position_test_1, "INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag", 1); //Le dernier numéro correspond aux textures bind dans le moteur
+    testCube_2.CUBFirstTimeSetVerticesPosition();
+    testCube_2.CUBScaleEntitySize(2.f);
     render.RDRCreateMandatoryForCube(engine, testCube_2, testCube_2.uiCUBId);
     engine.ENGAddCubeEntity(testCube_2);
 
     GLfloat ENTITYlightColorFloat_1[3] = { 1.f,0.f,1.f };
 
     CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, ENTITYlightColorFloat_1, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
-    testLight_1.LIGChangeWorldPosition(testLight_1.vec3ENTWorldPosition);
+    testLight_1.LIGFirstTimeSetVerticesPosition();
     render.RDRCreateMandatoryForLight(engine, testLight_1, testLight_1.uiLIGId);
     engine.ENGAddLightEntity(testLight_1);
 
     GLfloat ENTITYlightColorFloat_2[3] = { 0.f,0.5f,0.f };
 
-    CLight testLight_2 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), Position_test_1, ENTITYlightColorFloat_2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
-    testLight_2.LIGChangeWorldPosition(testLight_2.vec3ENTWorldPosition);
+    CLight testLight_2 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), Position_test_2, ENTITYlightColorFloat_2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_2.LIGFirstTimeSetVerticesPosition();
     render.RDRCreateMandatoryForLight(engine, testLight_2, testLight_2.uiLIGId);
     engine.ENGAddLightEntity(testLight_2);
 

@@ -8,6 +8,7 @@ public:
 	const char* pcCUBFragmentShaderName;
 	GLfloat* pgfCUBVertices;
 	unsigned int uiCUBVerticesSize;
+    GLfloat gfCUBScaleRatio;
 	//Material values
 	glm::vec3 vec3CUBAmbient;
 	glm::vec3 vec3CUBDiffuse;
@@ -73,6 +74,8 @@ public:
     CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number);
     CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency);
 	~CCube();
+
+    void CUBFirstTimeSetVerticesPosition();
 
     void CUBChangeWorldPosition(glm::vec3 new_position);
     void CUBScaleEntitySize(GLfloat ratio);

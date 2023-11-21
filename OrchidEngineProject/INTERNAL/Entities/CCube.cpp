@@ -24,6 +24,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	}
 	pgfCUBVertices = temp_vertices;
 	uiCUBVerticesSize = 288;
+	gfCUBScaleRatio = 1.f;
 	vec3ENTWorldPosition = position;
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
@@ -48,6 +49,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	}
 	pgfCUBVertices = temp_vertices;
 	uiCUBVerticesSize = 288;
+	gfCUBScaleRatio = 1.f;
 	//pgfENTVertices = temp_vertices;
 	//uiENTVerticesSize = 288;
 	vec3ENTWorldPosition = position;
@@ -79,14 +81,22 @@ void CCube::CUBDisplayNormalVectors() {
 
 }
 
-//Déplace le cube en temps réel
-void CCube::CUBChangeWorldPosition(glm::vec3 new_position) {
-	vec3ENTWorldPosition = new_position;
+void CCube::CUBFirstTimeSetVerticesPosition() {
 	for (int sommet = 0; sommet < 36; sommet++) {
 		for (int axe = 0; axe < 3; axe++) {
-			pgfCUBVertices[8 * sommet + axe] += new_position[axe];
+			pgfCUBVertices[8 * sommet + axe] += vec3ENTWorldPosition[axe] * gfCUBScaleRatio;
 		}
 	}
+}
+
+//Déplace le cube en temps réel
+void CCube::CUBChangeWorldPosition(glm::vec3 new_position) {
+	for (int sommet = 0; sommet < 36; sommet++) {
+		for (int axe = 0; axe < 3; axe++) {
+			pgfCUBVertices[8 * sommet + axe] += (new_position[axe] - vec3ENTWorldPosition[axe]) * gfCUBScaleRatio;
+		}
+	}
+	vec3ENTWorldPosition = new_position;
 }
 
 //Scale la taille de l'entité en temps réel
@@ -96,4 +106,5 @@ void CCube::CUBScaleEntitySize(GLfloat ratio) {
 			pgfCUBVertices[8 * sommet + axe] *= ratio;
 		}
 	}
+	gfCUBScaleRatio = ratio;
 }
