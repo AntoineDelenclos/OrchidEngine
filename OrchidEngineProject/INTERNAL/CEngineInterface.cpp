@@ -37,9 +37,8 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
 
     //Entity modifications via interface
     fEGINewX = 0.f; fEGINewY = 0.f; fEGINewZ = 0.f;
+    gfEGINewRatio = 1.f;
 
-    pcEGINewEntityVertexShaderName = "core.vs";
-    pcEGINewEntityFragmentShaderName = "core.frag";
     iEGITextureNumber = 0;
     rdrEGIRender = CRender();
 
@@ -179,12 +178,14 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
                 fEGINewX = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
                 fEGINewY = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
                 fEGINewZ = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
+                gfEGINewRatio = engine.pcubENGCubeEntitiesList[pos_cub].gfCUBScaleRatio;
             }
             if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
                 unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
                 fEGINewX = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
                 fEGINewY = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
                 fEGINewZ = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
+                gfEGINewRatio = engine.pligENGLightEntitiesList[pos_lig].gfLIGScaleRatio;
             }
         }
     }
@@ -258,37 +259,57 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
     }
     ImGui::NextColumn();
     //Display informations about selected entity : ID, Position X,Y,Z et texture pour l'instant
+    //Si on a une entité cube
     if (selectedEntity < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
         float Xc, Yc, Zc;
         unsigned int pos_cub = selectedEntity;
-        ImGui::SliderFloat("newX", &fEGINewX, -10.f, 10.f);
-        ImGui::SliderFloat("newY", &fEGINewY, -10.f, 10.f);
-        ImGui::SliderFloat("newZ", &fEGINewZ, -10.f, 10.f);
         Xc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
         Yc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
         Zc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
+        ImGui::SliderFloat("X", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("Y", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("Z", &fEGINewZ, -10.f, 10.f);
         float difXc = fEGINewX - Xc; float difYc = fEGINewY - Yc; float difZc = fEGINewZ - Zc;
         if (difXc != 0 || difYc != 0 || difZc != 0) {
             engine.pcubENGCubeEntitiesList[pos_cub].CUBChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
             rdrEGIRender.RDRCreateMandatoryForCube(engine, engine.pcubENGCubeEntitiesList[pos_cub], engine.pcubENGCubeEntitiesList[pos_cub].uiCUBId);
         }
         ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xc, Yc, Zc);
+        ImGui::SliderFloat("Scale Ratio", &gfEGINewRatio, 0.01f, 10.f);
+        GLfloat ScaleRatio = engine.pcubENGCubeEntitiesList[pos_cub].gfCUBScaleRatio;
+        GLfloat difScaleRatio = gfEGINewRatio - ScaleRatio;
+        if (difScaleRatio != 0) {
+            engine.pcubENGCubeEntitiesList[pos_cub].CUBScaleEntitySize(gfEGINewRatio);
+            rdrEGIRender.RDRCreateMandatoryForCube(engine, engine.pcubENGCubeEntitiesList[pos_cub], engine.pcubENGCubeEntitiesList[pos_cub].uiCUBId);
+        }
     }
+    //Si on a une light (actuellement avec les compteurs d'entités mais il faudra modifier les conditions lorsqu'il y aura d'autres entités)
     if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
-        float Xl, Yl, Zl;
+        float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
         unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
-        ImGui::SliderFloat("newX", &fEGINewX, -10.f, 10.f);
-        ImGui::SliderFloat("newY", &fEGINewY, -10.f, 10.f);
-        ImGui::SliderFloat("newZ", &fEGINewZ, -10.f, 10.f);
         Xl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
         Yl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
         Zl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
+        ImGui::SliderFloat("X", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("Y", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("Z", &fEGINewZ, -10.f, 10.f);
         float difXl = fEGINewX - Xl; float difYl = fEGINewY - Yl; float difZl = fEGINewZ - Zl;
         if (difXl != 0 || difYl != 0 || difZl != 0) {
             engine.pligENGLightEntitiesList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
             rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGLightEntitiesList[pos_lig], engine.pligENGLightEntitiesList[pos_lig].uiLIGId);
         }
         ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xl, Yl, Zl);
+        ImGui::SliderFloat("Scale Ratio", &gfEGINewRatio, 0.01f, 10.f); //Update the scale ratio of the light cube (when update is needed)
+        GLfloat ScaleRatio = engine.pligENGLightEntitiesList[pos_lig].gfLIGScaleRatio;
+        GLfloat difScaleRatio = gfEGINewRatio - ScaleRatio;
+        if (difScaleRatio != 0) {
+            engine.pligENGLightEntitiesList[pos_lig].LIGScaleEntitySize(gfEGINewRatio);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGLightEntitiesList[pos_lig], engine.pligENGLightEntitiesList[pos_lig].uiLIGId);
+        }
+        ImGui::ColorEdit3("Light Color", engine.pligENGLightEntitiesList[pos_lig].gfLIGColorLight); //Update the light's color and settings
+        ImGui::SliderFloat("Ambient Intensity", &engine.pligENGLightEntitiesList[pos_lig].gfLIGAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &engine.pligENGLightEntitiesList[pos_lig].gfLIGDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &engine.pligENGLightEntitiesList[pos_lig].gfLIGSpecularStrength, 0.f, 1.f);
     }
     ImGui::SameLine();
     ImGui::End();

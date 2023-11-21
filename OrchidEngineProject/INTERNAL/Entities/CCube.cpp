@@ -93,7 +93,7 @@ void CCube::CUBFirstTimeSetVerticesPosition() {
 void CCube::CUBChangeWorldPosition(glm::vec3 new_position) {
 	for (int sommet = 0; sommet < 36; sommet++) {
 		for (int axe = 0; axe < 3; axe++) {
-			pgfCUBVertices[8 * sommet + axe] += (new_position[axe] - vec3ENTWorldPosition[axe]) * gfCUBScaleRatio;
+			pgfCUBVertices[8 * sommet + axe] += (new_position[axe] - vec3ENTWorldPosition[axe]);
 		}
 	}
 	vec3ENTWorldPosition = new_position;
@@ -103,7 +103,9 @@ void CCube::CUBChangeWorldPosition(glm::vec3 new_position) {
 void CCube::CUBScaleEntitySize(GLfloat ratio) {
 	for (int sommet = 0; sommet < 36; sommet++) {
 		for (int axe = 0; axe < 3; axe++) {
+			pgfCUBVertices[8 * sommet + axe] = cubeVertices()[8 * sommet + axe];
 			pgfCUBVertices[8 * sommet + axe] *= ratio;
+			pgfCUBVertices[8 * sommet + axe] += vec3ENTWorldPosition[axe];
 		}
 	}
 	gfCUBScaleRatio = ratio;

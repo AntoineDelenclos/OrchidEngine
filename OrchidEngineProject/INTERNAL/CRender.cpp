@@ -80,7 +80,8 @@ void CRender::RDRCubeVerticesAndTextureRendering(CEngine &engine, CCube &cube_en
 void CRender::RDRLightVerticesAndTextureRendering(CEngine& engine, CLight& light_entity, int number) {
 	GLint lightColorUniformLocation = glGetUniformLocation(engine.shaENGLightShader.Program, "ownLightColor");
 	engine.shaENGLightShader.SHAUse();
-	glUniform3f(lightColorUniformLocation, light_entity.vec3LIGColorLight.x, light_entity.vec3LIGColorLight.y, light_entity.vec3LIGColorLight.z);
+	glUniform3f(lightColorUniformLocation, light_entity.gfLIGColorLight[0], light_entity.gfLIGColorLight[1], light_entity.gfLIGColorLight[2]);
+	//glUniform3f(lightColorUniformLocation, light_entity.vec3LIGColorLight.x, light_entity.vec3LIGColorLight.y, light_entity.vec3LIGColorLight.z);
 	//On set les shaders avant de draw
 
 	glBindTexture(GL_TEXTURE_2D, engine.ptexENGAllTextures[light_entity.uiENTTextureEngineNumber].guiTEXGetNumeroTexture());

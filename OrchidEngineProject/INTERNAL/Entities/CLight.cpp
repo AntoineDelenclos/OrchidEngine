@@ -28,6 +28,7 @@ CLight::CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position
 	vec3LIGColorLight.x = light_color[0];
 	vec3LIGColorLight.y = light_color[1];
 	vec3LIGColorLight.z = light_color[2];
+	gfLIGColorLight[0] = light_color[0]; gfLIGColorLight[1] = light_color[1]; gfLIGColorLight[2] = light_color[2];
 	gfLIGAmbientIntensity = ambient;
 	gfLIGDiffuseStrength = diffuse;
 	gfLIGSpecularStrength = specular;
@@ -51,7 +52,7 @@ void CLight::LIGFirstTimeSetVerticesPosition() {
 void CLight::LIGChangeWorldPosition(glm::vec3 new_position) {
 	for (int sommet = 0; sommet < 36; sommet++) {
 		for (int axe = 0; axe < 3; axe++) {
-			pgfLIGVertices[5 * sommet + axe] += (new_position[axe] - vec3ENTWorldPosition[axe]) * gfLIGScaleRatio;
+			pgfLIGVertices[5 * sommet + axe] += (new_position[axe] - vec3ENTWorldPosition[axe]);
 		}
 	}
 	vec3ENTWorldPosition = new_position;
@@ -60,7 +61,9 @@ void CLight::LIGChangeWorldPosition(glm::vec3 new_position) {
 void CLight::LIGScaleEntitySize(GLfloat ratio) {
 	for (int sommet = 0; sommet < 36; sommet++) {
 		for (int axe = 0; axe < 3; axe++) {
+			pgfLIGVertices[5 * sommet + axe] = lightVertices()[5 * sommet + axe];
 			pgfLIGVertices[5 * sommet + axe] *= ratio;
+			pgfLIGVertices[5 * sommet + axe] += vec3ENTWorldPosition[axe];
 		}
 	}
 	gfLIGScaleRatio = ratio;

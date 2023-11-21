@@ -26,8 +26,6 @@ public:
 	GLfloat* pgfEGINewEntityXYZPos;
 	unsigned int uiEGINewEntityGlobalID;
 	unsigned int uiEGINewEntityTypeID;
-	const char* pcEGINewEntityVertexShaderName;
-	const char* pcEGINewEntityFragmentShaderName;
 	GLfloat gfEGINewEntityScaleRatio;
 	int iEGITextureNumber;
 	//New entity material values
@@ -39,7 +37,8 @@ public:
 
 	//Entity modifications via interface
 	float fEGINewX, fEGINewY, fEGINewZ;
-
+	GLfloat gfEGINewRatio;
+	
 	CRender rdrEGIRender;
 	//New light variables
 	GLfloat pgfEGINewLightColor[3];

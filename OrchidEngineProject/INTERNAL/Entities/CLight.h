@@ -11,6 +11,7 @@ public:
     GLfloat gfLIGScaleRatio;
 	//light_type_enum enumLIGType;
 	glm::vec3 vec3LIGColorLight;
+    GLfloat gfLIGColorLight[3];
 	GLfloat gfLIGAmbientIntensity;
 	GLfloat gfLIGDiffuseStrength;
 	GLfloat gfLIGSpecularStrength;
