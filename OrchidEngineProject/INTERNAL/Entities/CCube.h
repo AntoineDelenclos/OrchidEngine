@@ -73,7 +73,7 @@ public:
 	CCube();
     CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number);
     CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, const char* vsFile, const char* fragFile, int texture_number, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float shininess, float transparency);
-	~CCube();
+    ~CCube();
 
     void CUBFirstTimeSetVerticesPosition();
 

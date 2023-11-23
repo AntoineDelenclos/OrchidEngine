@@ -81,6 +81,9 @@ void CException::EXCAfficherMessage(unsigned int valeur) {
 	case ENGINE_TEXTURE_LIMIT:
 		std::cout << "Max number of textures for the engine is reached" << std::endl;
 		break;
+	case MAP_KEYBINDS_EMPTY:
+		std::cout << "Keybinds' map is empty" << std::endl;
+		break;
 	default:
 		std::cout << "Autre exception." << std::endl;
 		break;

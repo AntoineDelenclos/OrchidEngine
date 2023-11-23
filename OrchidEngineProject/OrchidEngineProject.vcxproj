@@ -148,7 +148,6 @@
     <ClCompile Include="INTERNAL\CException.cpp" />
     <ClCompile Include="INTERNAL\CInputs.cpp" />
     <ClCompile Include="INTERNAL\CLogs.cpp" />
-    <ClCompile Include="INTERNAL\CParser.cpp" />
     <ClCompile Include="INTERNAL\CPostProcessing.cpp" />
     <ClCompile Include="INTERNAL\CRender.cpp" />
     <ClCompile Include="INTERNAL\CShader.cpp" />
@@ -177,7 +176,6 @@
     <ClInclude Include="INTERNAL\CException.h" />
     <ClInclude Include="INTERNAL\CInputs.h" />
     <ClInclude Include="INTERNAL\CLogs.h" />
-    <ClInclude Include="INTERNAL\CParser.h" />
     <ClInclude Include="INTERNAL\CPostProcessing.h" />
     <ClInclude Include="INTERNAL\CRender.h" />
     <ClInclude Include="INTERNAL\CShader.h" />

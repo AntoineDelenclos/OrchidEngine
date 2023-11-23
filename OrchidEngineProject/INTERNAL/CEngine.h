@@ -156,7 +156,13 @@ public:
 	//Textures related
 	//void ENGAddTextureToAllTexturesList(CTexture& texture);
 	void ENGAddTextureToAllTexturesList(CTexture texture);
+
+	//Inputs related
+	//Usefull to pass difftime of the last frame to the engine's inputs
+	void ENGPreUpdateInputsValues();
 };
+
+/////////////////////////// CTexture /////////////////////////
 
 class CTexture {
 public:

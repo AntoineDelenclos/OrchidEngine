@@ -1,4 +1,3 @@
-#include "stb_image.h"
 //GLM
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -8,7 +7,6 @@
 #include "CLogs.h"
 #include "GlobalTools.h"
 #include "CInputs.h"
-#include "CParser.h"
 #include "Entities/CEntity.h"
 #include "CEngineInterface.h"
 #include "CRender.h"
@@ -26,10 +24,6 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) 
 }
 
 int main() {
-    //CParser parser = CParser(inputs.strINPGetKeyBindsPathFile(), ":;");
-    //parser.inpPARInputsFromParser(inputs.strINPGetKeyBindsPathFile());
-    
-//////////////////////////////////// OLD ENGINE |^ ///////////////////////////////////
     engine.ENGStart();
     CEngineInterface engineInterface = CEngineInterface(engine);
     CRender render = CRender();
@@ -103,15 +97,25 @@ int main() {
     render.RDRCreateMandatoryForLight(engine, testLight_2, testLight_2.uiLIGId);
     engine.ENGAddLightEntity(testLight_2);
 
+
+    engine.inpENGInputs.INPAddingKeybind("FORWARD", GLFW_KEY_W);
+    engine.inpENGInputs.INPAddingKeybind("BACKWARD", GLFW_KEY_S);
+    engine.inpENGInputs.INPAddingKeybind("LEFT_DASH", GLFW_KEY_A);
+    engine.inpENGInputs.INPAddingKeybind("RIGHT_DASH", GLFW_KEY_D);
+    engine.inpENGInputs.INPAddingKeybind("FLY_DOWN", GLFW_KEY_LEFT_ALT);
+    engine.inpENGInputs.INPAddingKeybind("FLY_UP", GLFW_KEY_SPACE);
+    engine.inpENGInputs.INPAddingKeybind("QUIT", GLFW_KEY_ESCAPE);
+    engine.inpENGInputs.INPWriteMapBindingsOnTxtFile();
+    std::string strMap = engine.inpENGInputs.strINPMapBindingsFromFileToString();
+    engine.inpENGInputs.INPMapBindings(strMap);
+    
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 
         engine.ENGFrameUpdate();
         render.RDRPostProcess(engine);
 
         engine.ENGLightUpdate();
-        
-        
-        
+
         //IMGUI ELEMENTS
         /////// OLD CODE (BEFORE ENGINE UPDATE) ///////
         /*ImGui_ImplOpenGL3_NewFrame();
@@ -175,7 +179,7 @@ int main() {
         }
 
         engine.inpENGInputs.processInputs(engine.pwindowENGWindow);
-
+        glfwSetKeyCallback(engine.pwindowENGWindow, key_callback);
         //Pour activer/désactiver la souris
         if (engine.inpENGInputs.iINPCameraState == 0) {
             glfwSetInputMode(engine.pwindowENGWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -193,27 +197,7 @@ int main() {
             glfwSetCursorPosCallback(engine.pwindowENGWindow, mouse_callback);
             glfwSetScrollCallback(engine.pwindowENGWindow, scroll_callback);
         }
-        engineInterface.EGIUpdate(engine);
         
-        //Mouvement
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_W)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition += (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime ) * engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraFront;
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_S)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition -= (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime) * engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraFront;
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_A)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition -= glm::normalize(glm::cross(engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraFront, engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraUp)) * (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime);
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_D)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition += glm::normalize(glm::cross(engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraFront, engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraUp)) * (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime);
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_SPACE)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition += (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime) * engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraUp;
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_LEFT_ALT)) {
-            engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition -= (float)(engine.inpENGInputs.camINPChosenCamera.fCAMCameraSpeedMovement * engine.dENGDiffTime) * engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraUp;
-        }
         if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_LEFT)) {
             movement = glm::rotate(movement, glm::radians(-0.5f*sensitivity), glm::vec3(0.0f, 1.0f, 0.0f));
         }
@@ -227,15 +211,9 @@ int main() {
             movement = glm::rotate(movement, glm::radians(-0.5f*sensitivity), glm::vec3(1.0f, 0.0f, 0.0f));
         }
         if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_ESCAPE)) {
-            engine.inpENGInputs.INPReplaceWithGoodFile();
             glfwTerminate();
             return 0;
         }
-
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_R)) {
-            engine.inpENGInputs.INPInputsFromFile();
-        }
-
         //KEY_TEST        
         if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_B)) {
             CLogs logs = CLogs("Logs/logs.txt");
@@ -282,10 +260,11 @@ int main() {
         glUniformMatrix4fv(viewLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMView));
         glUniformMatrix4fv(projLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
         glUniformMatrix4fv(movLightLoc, 1, GL_FALSE, glm::value_ptr(movement));
-
-        //render.RDRRenderingEntities(engine);
+        
+        engineInterface.EGIUpdate(engine);
         render.RDRRenderingCubes(engine);
         render.RDRRenderingLightCubes(engine);
+        engine.ENGPreUpdateInputsValues();
 
         glfwSwapBuffers(engine.pwindowENGWindow); //Swap front and back buffers
 
@@ -300,9 +279,6 @@ int main() {
     engineInterface.~CEngineInterface();
     engine.~CEngine();
 
-    //Desalloue de la mémoire:
-    //glDeleteVertexArrays(1, &VAO_1);
-    //glDeleteBuffers(1, &VBO_1);
     glfwTerminate(); 
     return 0;
 }

@@ -282,6 +282,11 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             engine.pcubENGCubeEntitiesList[pos_cub].CUBScaleEntitySize(gfEGINewRatio);
             rdrEGIRender.RDRCreateMandatoryForCube(engine, engine.pcubENGCubeEntitiesList[pos_cub], engine.pcubENGCubeEntitiesList[pos_cub].uiCUBId);
         }
+        ImGui::Text("Texture :"); ImGui::SameLine();
+        if (ImGui::ImageButton((void*)(intptr_t)(engine.pcubENGCubeEntitiesList[pos_cub].uiENTTextureEngineNumber+1), ImVec2(SIZE_TEXTURE_INTERFACE, SIZE_TEXTURE_INTERFACE))) {
+            EGITexturesModule(engine);
+            engine.pcubENGCubeEntitiesList[pos_cub].uiENTTextureEngineNumber = iEGITextureNumber;
+        }
     }
     //Si on a une light (actuellement avec les compteurs d'entités mais il faudra modifier les conditions lorsqu'il y aura d'autres entités)
     if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {

@@ -102,9 +102,6 @@
     <ClCompile Include="INTERNAL\CLogs.cpp">
       <Filter>Source Files\INTERNAL</Filter>
     </ClCompile>
-    <ClCompile Include="INTERNAL\CParser.cpp">
-      <Filter>Source Files\INTERNAL</Filter>
-    </ClCompile>
     <ClCompile Include="INTERNAL\CPostProcessing.cpp">
       <Filter>Source Files\INTERNAL</Filter>
     </ClCompile>
@@ -183,9 +180,6 @@
       <Filter>Header Files\INTERNAL</Filter>
     </ClInclude>
     <ClInclude Include="INTERNAL\CLogs.h">
-      <Filter>Header Files\INTERNAL</Filter>
-    </ClInclude>
-    <ClInclude Include="INTERNAL\CParser.h">
       <Filter>Header Files\INTERNAL</Filter>
     </ClInclude>
     <ClInclude Include="INTERNAL\CPostProcessing.h">

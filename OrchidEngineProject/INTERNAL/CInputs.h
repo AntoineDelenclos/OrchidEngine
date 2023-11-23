@@ -19,21 +19,16 @@
 
 #include "GlobalTools.h"
 #include "CException.h"
-#include "CParser.h"
 #include "CCamera.h"
 
+class CEngine;
 
 class CInputs {
 private:
 	glm::mat4 mat4INPMovement;
-	std::map<std::string, int> mapINPInputsList; //Map qui va permettre de bind des actions à différentes touches et de les gérer dans leur propre classe
-	//Il faudrai charger les inputs via un fichier texte (sérialisation)
-	int iINPInputsState;
-	std::string strINPKeyBindsPathFile;
-	std::string strINPKeyBindsTempPathFile;
-	std::string strINPKeyFunctionNameToModify;
-	int iINPCountTrueInputFile;
 public:
+	std::string strINPKeyBindsPathFile;
+	double dINPDiffTime;
 	CCamera camINPChosenCamera;
 	int iINPCameraState;
 	float fINPLastMouseX;
@@ -43,27 +38,24 @@ public:
 	CInputs();
 	CInputs(CCamera &camera);
 	~CInputs();
+	//Callbacks methods
+
+	//Use keycallback for inputs that doesn't need to be smooth (like instant input)
 	void INPKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void INPMouseCallback(GLFWwindow* window, double xpos, double ypos);
 	void INPScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 	void INPSetMovement(glm::mat4 movement);
 	void INPSetKeyBindsPathFile(std::string path);
-	void INPSetKeyBindsTempPathFile(std::string path);
-	void INPSetKeyFunctionNameToModify(std::string name);
-	void INPSetStateInputs(int state);
-	void INPSetCountTrueInputFile(int count);
 	glm::mat4 mat4INPGetMovement();
 	std::string strINPGetKeyBindsPathFile();
-	std::string strINPGetKeyBindsTempPathFile();
-	std::string strINPGetKeyFunctionNameToModify();
-	int iINPGetInputsState();
-	int iINPGetCountTrueInputFile();
 
-	void INPLoadNewMapKeyBinds(std::string FunctionName, int Key);
-	void INPNewBinding(std::string FunctionName, int Key);
-	void INPReplaceWithGoodFile();
-
-	void INPInputsFromFile();
-
+	//For inputs that need to be smooth (like movements input)
 	void processInputs(GLFWwindow* window);
+
+	//New variables & methods
+	std::map<std::string, int> mapStrIntINPKeybinds;
+	void INPAddingKeybind(std::string function_name, int key);
+	void INPWriteMapBindingsOnTxtFile();
+	std::string strINPMapBindingsFromFileToString();
+	void INPMapBindings(std::string bindings_from_file);
 };

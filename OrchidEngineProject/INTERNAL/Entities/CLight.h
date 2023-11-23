@@ -65,7 +65,7 @@ public:
 
 	CLight();
     CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position, GLfloat* light_color, GLfloat ambient, GLfloat diffuse, GLfloat specular, const char* vsFile, const char* fragFile, int texture_number);
-	~CLight();
+    ~CLight();
 
     void LIGFirstTimeSetVerticesPosition();
 

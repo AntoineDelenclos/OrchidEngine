@@ -24,6 +24,9 @@
 #define ENGINE_NOT_RUNNING 18
 #define ENGINE_TEXTURE_LIMIT 19
 
+//INPUTS
+#define MAP_KEYBINDS_EMPTY 20
+
 class CException {
 private:
 	unsigned int uiEXCValeur;

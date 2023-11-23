@@ -37,6 +37,7 @@ CLight::CLight(unsigned int id_global, unsigned int id_light, glm::vec3 position
 	uiENTTextureEngineNumber = texture_number;
 }
 
+
 CLight::~CLight() {
 
 }

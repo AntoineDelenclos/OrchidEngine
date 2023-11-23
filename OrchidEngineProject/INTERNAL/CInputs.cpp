@@ -2,28 +2,16 @@
 
 CInputs::CInputs() {
     mat4INPMovement = glm::mat4(1.0f);
-    iINPInputsState = 0;
     strINPKeyBindsPathFile = "Keybinds/keybinds.txt";
-    strINPKeyBindsTempPathFile = "Keybinds/keybindstemp.txt";
-    strINPKeyFunctionNameToModify = "";
-    iINPCountTrueInputFile = 0;
     iINPCameraState = 0;
     fINPSensitivity = 0.05f;
     bINPFirstMouse = true;
     camINPChosenCamera = CCamera();
-    /*mapINPInputsList["RIGHT_DASH"] = GLFW_KEY_D;
-    mapINPInputsList["LEFT_DASH"] = GLFW_KEY_A;
-    mapINPInputsList["FORWARD_DASH"] = GLFW_KEY_W;
-    mapINPInputsList["BACKWARD_DASH"] = GLFW_KEY_S;*/
 }
 
 CInputs::CInputs(CCamera& camera) {
     mat4INPMovement = glm::mat4(1.0f);
-    iINPInputsState = 0;
     strINPKeyBindsPathFile = "Keybinds/keybinds.txt";
-    strINPKeyBindsTempPathFile = "Keybinds/keybindstemp.txt";
-    strINPKeyFunctionNameToModify = "";
-    iINPCountTrueInputFile = 0;
     iINPCameraState = 0;
     fINPSensitivity = 0.1f;
     camINPChosenCamera = camera;
@@ -34,32 +22,14 @@ CInputs::~CInputs() {
     //Il faut faire en sorte que lorsqu'on close le programme il ne reste qu'un fichier d'inputs nommé keybinds.txt
     //On supprime l'autre 
     //https://cplusplus.com/reference/fstream/fstream/swap-free/
-
 }
 
 void CInputs::INPSetMovement(glm::mat4 movement) {
     this->mat4INPMovement = movement;
 }
 
-
 void CInputs::INPSetKeyBindsPathFile(std::string path) {
     this->strINPKeyBindsPathFile = path;
-}
-
-void CInputs::INPSetKeyBindsTempPathFile(std::string path) {
-    this->strINPKeyBindsTempPathFile = path;
-}
-
-void CInputs::INPSetKeyFunctionNameToModify(std::string FunctionName) {
-    this->strINPKeyFunctionNameToModify = FunctionName;
-}
-
-void CInputs::INPSetStateInputs(int state) {
-    this->iINPInputsState = state;
-}
-
-void CInputs::INPSetCountTrueInputFile(int count) {
-    this->iINPCountTrueInputFile = count;
 }
 
 glm::mat4 CInputs::mat4INPGetMovement() {
@@ -70,194 +40,32 @@ std::string CInputs::strINPGetKeyBindsPathFile() {
     return this->strINPKeyBindsPathFile;
 }
 
-std::string CInputs::strINPGetKeyBindsTempPathFile() {
-    return this->strINPKeyBindsTempPathFile;
-}
-
-std::string CInputs::strINPGetKeyFunctionNameToModify() {
-    return this->strINPKeyFunctionNameToModify;
-}
-
-int CInputs::iINPGetInputsState() {
-    return this->iINPInputsState;
-}
-
-int CInputs::iINPGetCountTrueInputFile() {
-    return this->iINPCountTrueInputFile;
-}
-
-void CInputs::INPReplaceWithGoodFile() {
-    if (iINPCountTrueInputFile % 2 == 1) {
-        std::cout << "Il faut remplacer le fichier" << std::endl;
-        const char* pcConstKeyBinds = strINPKeyBindsPathFile.c_str();
-        const char* pcConstKeyBindsTemp = strINPKeyBindsTempPathFile.c_str();
-        if (std::rename(pcConstKeyBinds, "Keybinds/temp.txt") == 0) {
-            std::cout << "fonctionne etape 1" << std::endl;
-        }
-        if (std::rename(pcConstKeyBindsTemp, pcConstKeyBinds) == 0) {
-            std::cout << "fonctionne etape 2" << std::endl;
-        }
-        if (std::rename("Keybinds/temp.txt", pcConstKeyBindsTemp) == 0) {
-            std::cout << "fonctionne etape 3" << std::endl;
-        }
-    }
-    /*if (iINPCountTrueInputFile % 2 == 0) {
-        std::cout << "Il ne faut pas remplacer le fichier" << std::endl;
-        if (std::rename("Keybinds/brouillon.txt", "Keybinds/testfile.txt") == 0) {
-            std::cout << "La fonctionnalite est operationnelle" << std::endl;
-            //On fait une boucle avec un nom de fichier temporaire entre keybinds.txt et keybindstemp.txt
-        }
-        else {
-            std::cout << "Erreur remplacement fichier" << std::endl;
-        }
-    }*/
-}
-
-//Joue le même rôle que la fonction qui crée un inputs via le parser.
-void CInputs::INPLoadNewMapKeyBinds(std::string FunctionName, int Key) {
-    //Regarder si FunctionName est bien dans la liste des noms possibles et regarder si key est bien possible également
-    mapINPInputsList[FunctionName] = Key;
-    
-    
-    /*std::fstream fINPKeyBindsFile;
-    fINPKeyBindsFile.open(strINPKeyBindsPathFile);
-    if (!fINPKeyBindsFile.is_open()) {
-        CException exception(OUVERTURE_FICHIER_IMPOSSIBLE);
-        throw(exception);
-    }
-    else if (fINPKeyBindsFile.is_open()) {
-
-    }
-    fINPKeyBindsFile.close();*/
-}
-
-//On écrit dans le fichier texte
-//On regarde que l'input n'est pas déjà renseigné
-//Si c'est le cas alors on le remplace
-//On fait une option pour debind une touche
-//On fait en sorte qu'une fois debind une touche n'ait plus de valeur dans le fichier texte (e.g : RIGHT_DASH:;)
-
-//Fonction qui va écrire dans le fichier, ensuite on charge le fichier qui donne modifie cinputs
-void CInputs::INPNewBinding(std::string FunctionName, int Key) {
-    //mapINPInputsList[FunctionName] = Key;
-    std::fstream fINPKeyBindsFile;
-    fINPKeyBindsFile.open(strINPKeyBindsPathFile);
-    if (!fINPKeyBindsFile.is_open()) {
-        CException exception(OUVERTURE_FICHIER_IMPOSSIBLE);
-        throw(exception);
-    }
-    else if (fINPKeyBindsFile.is_open()) {
-        if (bFileIsEmpty(strINPGetKeyBindsPathFile()) == 1) {
-            fINPKeyBindsFile << FunctionName << ":" << Key << ";" << "\n";
-        }
-        else if (bFileIsEmpty(strINPGetKeyBindsPathFile()) == 0) {
-            if (bTextAlreadyInFile(FunctionName, strINPKeyBindsPathFile)) {
-                std::cout << "deja bind" << std::endl;
-                std::fstream fINPKeyBindsTempFile;
-                fINPKeyBindsTempFile.open(strINPKeyBindsTempPathFile);
-                if (!fINPKeyBindsFile.is_open()) {
-                    CException exception(OUVERTURE_FICHIER_IMPOSSIBLE);
-                    throw(exception);
-                }
-                else if (fINPKeyBindsTempFile.is_open()) {
-                    std::string strtemp;
-                    while (fINPKeyBindsFile >> strtemp) {
-                        if (strtemp.find(FunctionName) != std::string::npos) { //Dès qu'on est sur la ligne du fichier correspondant à l'input on va remplacer par new value
-                            strtemp = FunctionName;
-                            strtemp.append(":");
-                            strtemp.append(ConvertIntToString(Key));
-                            strtemp.append(";");
-                        }
-                        //Problème il faut sûrement faire un switch entre les 2 fichiers car seul le dernier input changé sera pris en compte
-                        //Egalement revoir le processus d'initialisation pour la 1ère fois des inputs
-                        strtemp += "\n";
-                        fINPKeyBindsTempFile << strtemp; //Ici on a bien le fichier avec le nouvel input.
-                        //On va maintenant réinverser les 2 fichiers
-                    }
-                }
-                //On inverse les 2 fichiers (on a donc un fichier actualisé avec tous les dernières valeurs de chaque input renseignées)
-                std::string PathTempFile = strINPGetKeyBindsTempPathFile();
-                std::string PathTrueFile = strINPGetKeyBindsPathFile();
-                INPSetKeyBindsPathFile(PathTempFile);
-                INPSetKeyBindsTempPathFile(PathTrueFile);
-                iINPCountTrueInputFile++; //Si l'action a été répétée 0[2] alors on dans le bon fichier (keybinds.txt)
-                //Sinon (1[2]) le fichier avec les derniers inputs est keybindstemp.txt et il faut alors refaire un dernier changement
-                //Comme ça, après réouverture de l'application et lecture dans le fichier keybinds.txt, tout sera bon
-                fINPKeyBindsTempFile.close();
-            }
-            fINPKeyBindsFile.seekg(-1, std::ios_base::end); //On se rend à la fin actuelle du fichier
-            fINPKeyBindsFile << FunctionName << ":" << Key << ";" << "\n";
-        }
-    }
-    fINPKeyBindsFile.close();
-}
-
-void CInputs::INPInputsFromFile() {
-    CParser parser = CParser(this->strINPGetKeyBindsPathFile(), ":;");
-    parser.PARLireFichier();
-    /*if (parser.strPARGetBuffer().empty()) { //Peut etre garder le pcpargetbuffer a la place
-        CException exception(AFFICHAGE_BUFFER_VIDE);
-        throw(exception);
-    }
-    else { //Ici on est censé avoir tout le fichier texte dans la string
-        char* ptr = NULL;
-        char* mots = strtok_s(parser.pcPARGetBuffer(), parser.strPARGetSeparators(), &ptr);
-        char* dernier_mot = NULL;
-        char** liste_mot = new char* [strlen(parser.pcPARGetBuffer())];
-        int cpt_mot = 0;
-        while (mots != NULL) {
-            liste_mot[cpt_mot] = _strdup(mots);
-            cpt_mot++;
-            mots = strtok_s(NULL, parser.strPARGetSeparators(), &ptr); //Mot suivant
-        }
-        int check = 0;
-        std::string FunctionName;
-        int Key;
-        for (int boucle = 0; boucle < cpt_mot; boucle++) {
-            if (check == 0 && boucle % 2 == 0) { //Name of the function
-                FunctionName = liste_mot[boucle];
-                check = 1;
-            }
-            if (check == 1 && boucle % 2 == 1) { //Associated Key
-                Key = ConvertStringToInt(liste_mot[boucle]);
-                check = 2;
-            }
-            if (check == 2) {
-                this->INPLoadNewMapKeyBinds(FunctionName, Key);
-                check = 0;
-            }
-        }
-    }*/
-}
+///////////////////////////// CALLBACK FUNCTIONS ////////////////////////////////////////////////////////////
 
 void CInputs::processInputs(GLFWwindow* window) {
-    //On fait ça si input state vaut 1
-    //Si input state vaut 2, on bloque ces actions là (évite de déplacer le personnage lorsqu'on change les inputs par exemple)
-    //Faire un bouton d'annulation d'attente d'input
-    if (glfwGetKey(window, mapINPInputsList["FORWARD_DASH"])) {
-        std::cout << "AVANCE" << std::endl;
-        //movement = glm::translate(movement, glm::vec3(0.0f, 0.0f, 0.01f));
+    //Movements
+    if (glfwGetKey(window, mapStrIntINPKeybinds["FORWARD"])) {
+        camINPChosenCamera.vec3CAMCameraPosition += (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime) * camINPChosenCamera.vec3CAMCameraFront;
     }
-    if (glfwGetKey(window, mapINPInputsList["BACKWARD_DASH"])) {
-        std::cout << "RECULE" << std::endl;
-        //movement = glm::translate(movement, glm::vec3(0.0f, 0.0f, -0.01f));
+    if (glfwGetKey(window, mapStrIntINPKeybinds["BACKWARD"])) {
+        camINPChosenCamera.vec3CAMCameraPosition -= (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime) * camINPChosenCamera.vec3CAMCameraFront;
     }
-    if (glfwGetKey(window, mapINPInputsList["LEFT_DASH"])) {
-        std::cout << "DECALE A GAUCHE" << std::endl;
-        //movement = glm::translate(movement, glm::vec3(0.01f, 0.0f, 0.0f));
+    if (glfwGetKey(window, mapStrIntINPKeybinds["LEFT_DASH"])) {
+        camINPChosenCamera.vec3CAMCameraPosition -= glm::normalize(glm::cross(camINPChosenCamera.vec3CAMCameraFront, camINPChosenCamera.vec3CAMCameraUp)) * (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime);
     }
-    if (glfwGetKey(window, mapINPInputsList["RIGHT_DASH"])) {
-        std::cout << "DECALE A DROITE" << std::endl;
-        //movement = glm::translate(movement, glm::vec3(-0.01f, 0.0f, 0.0f));
+    if (glfwGetKey(window, mapStrIntINPKeybinds["RIGHT_DASH"])) {
+        camINPChosenCamera.vec3CAMCameraPosition += glm::normalize(glm::cross(camINPChosenCamera.vec3CAMCameraFront, camINPChosenCamera.vec3CAMCameraUp)) * (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime);
+    }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["FLY_DOWN"])) {
+        camINPChosenCamera.vec3CAMCameraPosition -= (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime) * camINPChosenCamera.vec3CAMCameraUp;
+    }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["FLY_UP"])) {
+        camINPChosenCamera.vec3CAMCameraPosition += (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime) * camINPChosenCamera.vec3CAMCameraUp;
     }
 }
 
 void CInputs::INPKeyCallback(GLFWwindow* window_, int key, int scancode, int action, int mods) {
-    if (iINPGetInputsState() == 2) {
-        std::cout << "right dash bien dans le fichier ? " << bTextAlreadyInFile(strINPGetKeyFunctionNameToModify(), strINPGetKeyBindsPathFile()) << std::endl;
-        INPNewBinding(strINPGetKeyFunctionNameToModify(), key);
-        INPSetStateInputs(1);
-    }
+    //View camera
     if (key == GLFW_KEY_V && action == GLFW_PRESS && iINPCameraState == 0) {
         iINPCameraState = 1;
     }
@@ -266,6 +74,10 @@ void CInputs::INPKeyCallback(GLFWwindow* window_, int key, int scancode, int act
     }
     if (key == GLFW_KEY_V && action == GLFW_PRESS && iINPCameraState == 2) {
         iINPCameraState = 0;
+    }
+    //Engine
+    if (key == mapStrIntINPKeybinds["QUIT"] && action == GLFW_PRESS) {
+        glfwTerminate();
     }
 }
 
@@ -311,5 +123,83 @@ void CInputs::INPScrollCallback(GLFWwindow* window, double xoffset, double yoffs
     }
     if (camINPChosenCamera.fCAMFovZoom > 45.f) {
         camINPChosenCamera.fCAMFovZoom = 45.f;
+    }
+}
+
+//////////////////////////////////// NEW KEYBINDS MAPPING SYSTEM //////////////////////////////////
+
+void CInputs::INPAddingKeybind(std::string function_name, int key) {
+    mapStrIntINPKeybinds[function_name] = key;
+}
+
+void CInputs::INPWriteMapBindingsOnTxtFile() {
+    int number_of_binds = mapStrIntINPKeybinds.size();
+    if (number_of_binds == 0) {
+        CException exception(MAP_KEYBINDS_EMPTY);
+        throw(exception);
+    }
+    else {
+        std::fstream fINPKeyBindsFile;
+        fINPKeyBindsFile.open(strINPKeyBindsPathFile); //On va écraser l'ancien texte du fichier
+        if (!fINPKeyBindsFile.is_open()) {
+            CException exception(OUVERTURE_FICHIER_IMPOSSIBLE);
+            throw(exception);
+        }
+        else if (fINPKeyBindsFile.is_open()) {
+            std::map<std::string, int>::iterator map_iterator = mapStrIntINPKeybinds.begin();
+            while (map_iterator != mapStrIntINPKeybinds.end()) {
+                fINPKeyBindsFile << map_iterator->first << ";" << map_iterator->second << ";";
+                ++map_iterator;
+            }
+        }
+        fINPKeyBindsFile.close();
+    }
+}
+
+std::string CInputs::strINPMapBindingsFromFileToString() {
+    std::ifstream iFile;
+    iFile.open(strINPKeyBindsPathFile);
+    std::string strFromTextFile;
+    if (!iFile.is_open()) {
+        CException exception(OUVERTURE_FICHIER_IMPOSSIBLE);
+        throw(exception);
+    }
+    else if (iFile.is_open()) {
+        iFile >> strFromTextFile; //On a bien une string qui contient la map entière
+    }
+    return strFromTextFile;
+}
+
+void CInputs::INPMapBindings(std::string bindings_from_file) {
+    int parseState = 0;
+    std::string function_name;
+    std::string key;
+    //On va mettre un iterator de string et on va lire caractère par caractère.
+    for (std::string::iterator strIterator = bindings_from_file.begin(); strIterator != bindings_from_file.end(); strIterator++) {
+        if (parseState == 0) {
+            if (*strIterator == ';') {
+                parseState = 1;
+            }
+            else {
+                function_name += *strIterator;
+            }
+        }
+        if (parseState == 1) {
+            if (*strIterator != ';') {
+                parseState = 2;
+            }
+        }
+        if (parseState == 2) {
+            if (*strIterator == ';') {
+                int key_value = stoi(key);
+                INPAddingKeybind(function_name, key_value);
+                function_name = "";
+                key = "";
+                parseState = 0;
+            }
+            else {
+                key += *strIterator;
+            }
+        }
     }
 }

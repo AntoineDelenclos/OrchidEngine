@@ -315,6 +315,11 @@ void CEngine::ENGAddTextureToAllTexturesList(CTexture texture) {
 	}
 }
 
+//Function to pass to the callback functions in inputs the values needed
+void CEngine::ENGPreUpdateInputsValues() {
+	inpENGInputs.dINPDiffTime = dENGDiffTime;
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////// CTEXTURE //////////////////////////////////////////////////////////////
