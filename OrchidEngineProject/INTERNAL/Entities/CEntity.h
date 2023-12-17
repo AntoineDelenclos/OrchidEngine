@@ -16,7 +16,7 @@
 #include <GLFW/glfw3.h>
 
 //Il faudra rajouter au fur et à mesure (player, model, et peut etre penser à différencier les types de lumiere)
-enum entity_type_enum { cube, polyhedron, light, camera, entity, face };
+enum entity_type_enum { cube, polyhedron, dir_light, point_light, spot_light, camera, entity, face };
 
 class CEntity {
 //private:

@@ -15,6 +15,11 @@ CCamera::CCamera() {
 	//vec3CAMCameraDirection = glm::normalize(vec3CAMCameraPosition - vec3CAMCameraTarget);
 	//vec3CAMCameraRight = glm::normalize(glm::cross(glm::vec3{ 0.f,1.f,0.f }, vec3CAMCameraDirection));
 	//vec3CAMCameraUp = glm::cross(vec3CAMCameraDirection, vec3CAMCameraRight);
+	mat4CAMModel = glm::mat4(1.f);
+	//model = glm::rotate(model, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f)); //Orthographic projection
+		//view = glm::translate(view, glm::vec3(screenWidth / 2, screenHeight / 2, -700.0f)); //Orthographic projection
+	mat4CAMModel = glm::rotate(mat4CAMModel, glm::radians(0.0f), glm::vec3(0.5f, 1.0f, 0.0f)); //Perspective projection ROTATION = 0.0f ICI
+	//view = glm::translate(view, glm::vec3(0.0f,0.0f,translation)); //Perspective projection
 	mat4CAMView = glm::mat4(1.f);
 	mat4CAMView = glm::lookAt(vec3CAMCameraPosition, vec3CAMCameraPosition+vec3CAMCameraFront, vec3CAMCameraUp);
 	mat4CAMProjection = glm::perspective(glm::radians(fCAMFovZoom), (float)1280 / (float)960, 0.1f, 100.f);
@@ -22,14 +27,4 @@ CCamera::CCamera() {
 
 CCamera::~CCamera() {
 
-}
-
-void CCamera::CAMUpdate() {
-	/*float radius = 3.f;
-	float camX = static_cast<float>(sin(glfwGetTime()) * radius);
-	float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
-	vec3CAMCameraPosition = glm::vec3(camX, 0.0f, camZ);
-	mat4CAMView = glm::lookAt(vec3CAMCameraPosition, vec3CAMCameraTarget, glm::vec3(0.0f, 1.0f, 0.0f));*/
-	mat4CAMView = glm::lookAt(vec3CAMCameraPosition, vec3CAMCameraPosition + vec3CAMCameraFront, vec3CAMCameraUp);
-	mat4CAMProjection = glm::perspective(glm::radians(fCAMFovZoom), (float)1280 / (float)960, 0.1f, 100.f);
 }

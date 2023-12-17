@@ -62,7 +62,6 @@ int main() {
     float translation = -0.00f;
     float acceleration_rotation = 1.0f;
     float acceleration_translation = 1.0f;
-    float  sensitivity = 1.0f;
     int nb_frames = 0; //Permet de fixer des events en fonction du temps (par exemple au bout de 3 sec changer le sens de translation)
 
     glfwSetKeyCallback(engine.pwindowENGWindow, key_callback);
@@ -85,80 +84,64 @@ int main() {
 
     GLfloat ENTITYlightColorFloat_1[3] = { 1.f,0.f,1.f };
 
-    CLight testLight_1 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), pos_cube_light, ENTITYlightColorFloat_1, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    CLight testLight_1 = CLight(directional, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(dir_light), pos_cube_light, glm::vec3(1.f, 1.f, 1.f), ENTITYlightColorFloat_1, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
     testLight_1.LIGFirstTimeSetVerticesPosition();
     render.RDRCreateMandatoryForLight(engine, testLight_1, testLight_1.uiLIGId);
     engine.ENGAddLightEntity(testLight_1);
+    
+    GLfloat colorlight2[3] = {0.f, 0.5f, 0.f};
 
-    GLfloat ENTITYlightColorFloat_2[3] = { 0.f,0.5f,0.f };
-
-    CLight testLight_2 = CLight(engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(light), Position_test_2, ENTITYlightColorFloat_2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    CLight testLight_2 = CLight(directional, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(dir_light), Position_test_2, glm::vec3(1.f, 1.f, 1.f), colorlight2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
     testLight_2.LIGFirstTimeSetVerticesPosition();
     render.RDRCreateMandatoryForLight(engine, testLight_2, testLight_2.uiLIGId);
     engine.ENGAddLightEntity(testLight_2);
 
+    glm::vec3 Position_test_3 = glm::vec3(2.f, 2.f, 2.f);
+    GLfloat colorlight3[3] = { 1.f, 1.f, 1.f };
 
+    CLight testLight_3 = CLight(point, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(point_light), Position_test_3, colorlight3, 1.0f, 0.09f, 0.032f, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_3.LIGFirstTimeSetVerticesPosition();
+    render.RDRCreateMandatoryForLight(engine, testLight_3, testLight_3.uiLIGId);
+    engine.ENGAddLightEntity(testLight_3);
+
+    glm::vec3 Position_test_4 = glm::vec3(-1.f, -1.f, 2.f);
+    GLfloat colorlight4[3] = { 0.4f, 1.f, 0.2f };
+
+    CLight testLight_4 = CLight(spot, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(spot_light), Position_test_4, glm::vec3(1.f, 1.f, 1.f), 0.91f, 0.82f, colorlight4, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_4.LIGFirstTimeSetVerticesPosition();
+    render.RDRCreateMandatoryForLight(engine, testLight_4, testLight_4.uiLIGId);
+    engine.ENGAddLightEntity(testLight_4);
+
+    glm::vec3 Position_test_5 = glm::vec3(2.f, 1.f, 0.f);
+
+    CLight testLight_5 = CLight(directional, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(dir_light), Position_test_5, glm::vec3(1.f, 1.f, 1.f), colorlight2, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
+    testLight_5.LIGFirstTimeSetVerticesPosition();
+    render.RDRCreateMandatoryForLight(engine, testLight_5, testLight_5.uiLIGId);
+    engine.ENGAddLightEntity(testLight_5);
+
+    //Key bindings
     engine.inpENGInputs.INPAddingKeybind("FORWARD", GLFW_KEY_W);
     engine.inpENGInputs.INPAddingKeybind("BACKWARD", GLFW_KEY_S);
     engine.inpENGInputs.INPAddingKeybind("LEFT_DASH", GLFW_KEY_A);
     engine.inpENGInputs.INPAddingKeybind("RIGHT_DASH", GLFW_KEY_D);
     engine.inpENGInputs.INPAddingKeybind("FLY_DOWN", GLFW_KEY_LEFT_ALT);
     engine.inpENGInputs.INPAddingKeybind("FLY_UP", GLFW_KEY_SPACE);
+    engine.inpENGInputs.INPAddingKeybind("ROTATE_VIEW_UP", GLFW_KEY_UP);
+    engine.inpENGInputs.INPAddingKeybind("ROTATE_VIEW_DOWN", GLFW_KEY_DOWN);
+    engine.inpENGInputs.INPAddingKeybind("ROTATE_VIEW_LEFT", GLFW_KEY_LEFT);
+    engine.inpENGInputs.INPAddingKeybind("ROTATE_VIEW_RIGHT", GLFW_KEY_RIGHT);
     engine.inpENGInputs.INPAddingKeybind("QUIT", GLFW_KEY_ESCAPE);
     engine.inpENGInputs.INPWriteMapBindingsOnTxtFile();
     std::string strMap = engine.inpENGInputs.strINPMapBindingsFromFileToString();
     engine.inpENGInputs.INPMapBindings(strMap);
     
+
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 
-        engine.ENGFrameUpdate();
+        engine.ENGFrameUpdate(); //Contains glfwPollEvents()
         render.RDRPostProcess(engine);
 
         engine.ENGLightUpdate();
-
-        //IMGUI ELEMENTS
-        /////// OLD CODE (BEFORE ENGINE UPDATE) ///////
-        /*ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-
-        ImGui::Begin("Nom de la fenetre");
-        ImGui::Text("Emplacement du texte");
-        ImGui::ColorEdit4("Background color", background_color);
-        ImGui::End();
-
-
-        ImGui::Begin("Debug window");
-        if (ImGui::SmallButton("Reset the Entire Logs file")) {
-            CLogs logs = CLogs("Logs/logs.txt");
-            logs.LOGResetEntireLogs(); 
-            logs.~CLogs();
-        }
-        ImGui::Checkbox("Wireframe display", &wireframe_display_on);
-        ImGui::End();
-
-        ImGui::Begin("KeyBinds");
-        if (ImGui::SmallButton("RIGHT_DASH")) {
-            inputsTest.INPSetKeyFunctionNameToModify("RIGHT_DASH");
-            inputsTest.INPSetStateInputs(2);
-        }
-        if (ImGui::SmallButton("LEFT_DASH")) {
-            inputsTest.INPSetKeyFunctionNameToModify("LEFT_DASH");
-            inputsTest.INPSetStateInputs(2);
-        }
-        if (ImGui::SmallButton("FORWARD_DASH")) {
-            inputsTest.INPSetKeyFunctionNameToModify("FORWARD_DASH");
-            inputsTest.INPSetStateInputs(2);
-        }
-        if (ImGui::SmallButton("BACKWARD_DASH")) {
-            inputsTest.INPSetKeyFunctionNameToModify("BACKWARD_DASH");
-            inputsTest.INPSetStateInputs(2);
-        }
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        */
 
         //Permet de fusionner les textures
         /*if (glfwGetKey(window, GLFW_KEY_Y)) {
@@ -167,11 +150,6 @@ int main() {
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
         */
         //glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
-
-///////////////////////////////////////////////////////////////////////////////////////////////               
-        //Maintenant on peut passer les informations
-        //int texture_value_location = glGetUniformLocation(ourShader.Program, "textureValue");
-        //glUniform1i(texture_value_location, texture_value);
 
         if (nb_frames > 180) {
             translation = -1 * translation;
@@ -197,23 +175,7 @@ int main() {
             glfwSetCursorPosCallback(engine.pwindowENGWindow, mouse_callback);
             glfwSetScrollCallback(engine.pwindowENGWindow, scroll_callback);
         }
-        
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_LEFT)) {
-            movement = glm::rotate(movement, glm::radians(-0.5f*sensitivity), glm::vec3(0.0f, 1.0f, 0.0f));
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_RIGHT)) {
-            movement = glm::rotate(movement, glm::radians(0.5f*sensitivity), glm::vec3(0.0f, 1.0f, 0.0f));
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_UP)) {
-            movement = glm::rotate(movement, glm::radians(0.5f*sensitivity), glm::vec3(1.0f, 0.0f, 0.0f));
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_DOWN)) {
-            movement = glm::rotate(movement, glm::radians(-0.5f*sensitivity), glm::vec3(1.0f, 0.0f, 0.0f));
-        }
-        if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_ESCAPE)) {
-            glfwTerminate();
-            return 0;
-        }
+
         //KEY_TEST        
         if (glfwGetKey(engine.pwindowENGWindow, GLFW_KEY_B)) {
             CLogs logs = CLogs("Logs/logs.txt");
@@ -227,40 +189,14 @@ int main() {
         //std::cout << rotation;
         //Create transformations
         //Vector movement
-
-
-        //model = glm::rotate(model, 0.5f, glm::vec3(1.0f, 0.0f, 0.0f)); //Orthographic projection
-        //view = glm::translate(view, glm::vec3(screenWidth / 2, screenHeight / 2, -700.0f)); //Orthographic projection
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.5f, 1.0f, 0.0f)); //Perspective projection
-        //view = glm::translate(view, glm::vec3(0.0f,0.0f,translation)); //Perspective projection
+        
         //movement = glm::vec3(0.0f, 0.0f, 0.0f);
         //std::cout << glfwGetTime();
         /*Pour tester avec une projection ortographique on peut utiliser
         model = glm::rotate(model, 0.5f, glm::vec3(1.0f,0.0f,0.0f));
         view = glm::translate(view, glm::vec3(screenWidth/2, screenHeight/2, -700.0f));*/
 
-        GLint modelLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "model");
-        GLint viewLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "view");
-        GLint projLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "projection");
-        GLint movLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "movement");
-        engine.shaENGCoreShader.SHAUse();
-        //On les passe aux shaders
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMView));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
-        glUniformMatrix4fv(movLoc, 1, GL_FALSE, glm::value_ptr(movement));
-
-        //LIGHT SHADERS
-        GLint modelLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "model");
-        GLint viewLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "view");
-        GLint projLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "projection");
-        GLint movLightLoc = glGetUniformLocation(engine.shaENGLightShader.Program, "movement");
-        engine.shaENGLightShader.SHAUse();
-        glUniformMatrix4fv(modelLightLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMView));
-        glUniformMatrix4fv(projLightLoc, 1, GL_FALSE, glm::value_ptr(engine.inpENGInputs.camINPChosenCamera.mat4CAMProjection));
-        glUniformMatrix4fv(movLightLoc, 1, GL_FALSE, glm::value_ptr(movement));
-        
+        engine.ENGCameraUpdate();
         engineInterface.EGIUpdate(engine);
         render.RDRRenderingCubes(engine);
         render.RDRRenderingLightCubes(engine);

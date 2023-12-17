@@ -8,7 +8,6 @@
 class CEngineInterface {
 public:
 	bool bEGIFullscreen;
-	bool bEGIDisplayState; //Si l'interface est affichée.
 	bool bEGIWireframeChecked;
 	bool bEGIFPSPlotChecked;
 
@@ -35,21 +34,17 @@ public:
 	float fEGINewEntityShininess;
 	float fEGINewEntityTransparency;
 
-	//Entity modifications via interface
-	float fEGINewX, fEGINewY, fEGINewZ;
-	GLfloat gfEGINewRatio;
-	
 	CRender rdrEGIRender;
 	//New light variables
 	GLfloat pgfEGINewLightColor[3];
 	GLfloat gfEGINewLightAmbientIntensity;
 
-	//Test Light
-	glm::vec3 vec3EGITestLightColor;
-	GLfloat gfEGITestLightAmbientIntensity;
-	GLfloat gfEGITestLightDiffuseStrength;
-	GLfloat gfEGITestLightSpecularStrength;
-	glm::vec3 vec3EGITestLightPosition;
+	//Entity modifications via interface
+	float fEGINewX, fEGINewY, fEGINewZ;
+	GLfloat gfEGINewRatio;
+	float fEGINewDirectionX, fEGINewDirectionY, fEGINewDirectionZ;
+	float fEGINewKC, fEGINewKL, fEGINewKQ;
+
 
 	CEngineInterface(CEngine &engine);
 	~CEngineInterface();
@@ -60,7 +55,9 @@ public:
 	void EGIEngineModule(CEngine &engine);
 	void EGIInputsModule(CEngine& engine);
 	void EGITexturesModule(CEngine& engine);
-	void EGIEntitiesModule(CEngine &engine);
+	void EGIEntitiesListsModule(CEngine &engine);
+	void EGINewEntityModule(CEngine& engine);
+	void EGISelectedEntityModule(CEngine& engine);
 	void EGICameraModule(CEngine& engine, CCamera& camera);
 
 	void EGIWireframeUpdate();

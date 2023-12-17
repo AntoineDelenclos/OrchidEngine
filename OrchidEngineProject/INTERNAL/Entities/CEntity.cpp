@@ -25,7 +25,7 @@ CEntity::CEntity(entity_type_enum type, unsigned int id, glm::vec3 position, con
 		pgfENTVertices = (GLfloat*)cubeVertices();
 	case polyhedron:
 		strENTName = "Polyhedron " + std::to_string(id);
-	case light:
+	case dir_light:
 		strENTName = "Light " + std::to_string(id);
 	case camera:
 		strENTName = "Camera " + std::to_string(id);
@@ -167,7 +167,19 @@ void CEntity::ENTChangeWorldPosition(glm::vec3 new_position) {
 				pgfENTVertices[8 * sommet + axe] += new_position[axe];
 			}
 		}
-	case light:
+	case dir_light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] += new_position[axe];
+			}
+		}
+	case point_light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] += new_position[axe];
+			}
+		}
+	case spot_light:
 		for (int sommet = 0; sommet < 36; sommet++) {
 			for (int axe = 0; axe < 3; axe++) {
 				pgfENTVertices[5 * sommet + axe] += new_position[axe];
@@ -186,7 +198,19 @@ void CEntity::ENTScaleEntitySize(GLfloat ratio) {
 				pgfENTVertices[8 * sommet + axe] *= ratio;
 			}
 		}
-	case light:
+	case dir_light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] *= ratio;
+			}
+		}
+	case point_light:
+		for (int sommet = 0; sommet < 36; sommet++) {
+			for (int axe = 0; axe < 3; axe++) {
+				pgfENTVertices[5 * sommet + axe] *= ratio;
+			}
+		}
+	case spot_light:
 		for (int sommet = 0; sommet < 36; sommet++) {
 			for (int axe = 0; axe < 3; axe++) {
 				pgfENTVertices[5 * sommet + axe] *= ratio;

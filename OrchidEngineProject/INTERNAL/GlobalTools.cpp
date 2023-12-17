@@ -39,7 +39,7 @@ int ConvertStringToInt(char* str) {
     int entier = 0;
     int taille = LengthString(str);
     for (int i = 0; i < taille; i++) {
-        entier += pow(10, taille - i) * (str[i] - 48); //On multiplie par une puissance de 10 en fonctione de la position et on fait -48 pour avoir la correspondance de la table ASCII
+        entier += (int)(pow(10, taille - i) * (str[i] - 48)); //On multiplie par une puissance de 10 en fonctione de la position et on fait -48 pour avoir la correspondance de la table ASCII
     }
     return entier;
 }
@@ -54,7 +54,7 @@ char* ConvertIntToString(int entier) {
         puissance++;
     }//Ici on a donc la plus grande puissance de 10 de l'entier
 
-    int diviseur = pow(10, puissance); //1,10,100,1000,...
+    int diviseur = (int)(pow(10, puissance)); //1,10,100,1000,...
     str = (char*)malloc(sizeof(char) * (puissance + 2)); //Puissance + 1 pour avoir les unités et + 1 encore pour le '\0'
     for (int i = 0; i < puissance + 1; i++) {
         entier_convert = entier / diviseur; //On a donc l'entier qui multiplie le diviseur actuel. Pour 3318 on aura 3 puis 3 puis 1 et enfin 8
@@ -202,7 +202,7 @@ float* texture_cube(unsigned int numero_texture, unsigned int entier_parcourt) {
         colonne = entier_parcourt;
     }
     colonne--;
-    float parc = 1.0 / entier_parcourt;
+    float parc = 1.f / entier_parcourt;
     vertex[0] = colonne * parc; // BAS GAUCHE X
     vertex[1] = ligne * parc; // BAS GAUCHE Y
     vertex[2] = (colonne + 1) * parc; // BAS DROITE X

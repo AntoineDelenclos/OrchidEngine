@@ -4,7 +4,7 @@ CInputs::CInputs() {
     mat4INPMovement = glm::mat4(1.0f);
     strINPKeyBindsPathFile = "Keybinds/keybinds.txt";
     iINPCameraState = 0;
-    fINPSensitivity = 0.05f;
+    dINPSensitivity = 0.05f;
     bINPFirstMouse = true;
     camINPChosenCamera = CCamera();
 }
@@ -13,7 +13,7 @@ CInputs::CInputs(CCamera& camera) {
     mat4INPMovement = glm::mat4(1.0f);
     strINPKeyBindsPathFile = "Keybinds/keybinds.txt";
     iINPCameraState = 0;
-    fINPSensitivity = 0.1f;
+    dINPSensitivity = 0.1f;
     camINPChosenCamera = camera;
     bINPFirstMouse = true;
 }
@@ -62,6 +62,18 @@ void CInputs::processInputs(GLFWwindow* window) {
     if (glfwGetKey(window, mapStrIntINPKeybinds["FLY_UP"])) {
         camINPChosenCamera.vec3CAMCameraPosition += (float)(camINPChosenCamera.fCAMCameraSpeedMovement * dINPDiffTime) * camINPChosenCamera.vec3CAMCameraUp;
     }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["ROTATE_VIEW_LEFT"])) { //Essayer avec camINPChosenCamera.mat4CAMView
+        mat4INPMovement = glm::rotate(mat4INPMovement, glm::radians((GLfloat)(-6.f * dINPSensitivity)), glm::vec3(0.0f,1.0f,0.0f));
+    }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["ROTATE_VIEW_RIGHT"])) {
+        mat4INPMovement = glm::rotate(mat4INPMovement, glm::radians((GLfloat)(6.f * dINPSensitivity)), glm::vec3(0.0f, 1.0f, 0.0f));
+    }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["ROTATE_VIEW_UP"])) {
+        mat4INPMovement = glm::rotate(mat4INPMovement, glm::radians((GLfloat)(6.f * dINPSensitivity)), glm::vec3(1.0f, 0.0f, 0.0f));
+    }
+    if (glfwGetKey(window, mapStrIntINPKeybinds["ROTATE_VIEW_DOWN"])) {
+        mat4INPMovement = glm::rotate(mat4INPMovement, glm::radians((GLfloat)(-6.f * dINPSensitivity)), glm::vec3(1.0f, 0.0f, 0.0f));
+    }
 }
 
 void CInputs::INPKeyCallback(GLFWwindow* window_, int key, int scancode, int action, int mods) {
@@ -84,26 +96,26 @@ void CInputs::INPKeyCallback(GLFWwindow* window_, int key, int scancode, int act
 void CInputs::INPMouseCallback(GLFWwindow* window, double xpos, double ypos) {
     if (iINPCameraState == 2) {
         if (bINPFirstMouse) {
-            fINPLastMouseX = xpos;
-            fINPLastMouseY = ypos;
+            dINPLastMouseX = xpos;
+            dINPLastMouseY = ypos;
             bINPFirstMouse = false;
         }
-        float xoffset = xpos - fINPLastMouseX;
-        float yoffset = fINPLastMouseY - ypos; // reversed since y-coordinates range from bottom to top
-        fINPLastMouseX = xpos;
-        fINPLastMouseY = ypos;
+        double xoffset = xpos - dINPLastMouseX;
+        double yoffset = dINPLastMouseY - ypos; // reversed since y-coordinates range from bottom to top
+        dINPLastMouseX = xpos;
+        dINPLastMouseY = ypos;
 
-        xoffset *= fINPSensitivity;
-        yoffset *= fINPSensitivity;
+        xoffset *= dINPSensitivity;
+        yoffset *= dINPSensitivity;
 
-        camINPChosenCamera.fCAMYaw += xoffset;
-        camINPChosenCamera.fCAMPitch += yoffset;
+        camINPChosenCamera.fCAMYaw += (GLfloat)xoffset;
+        camINPChosenCamera.fCAMPitch += (GLfloat)yoffset;
 
-        if (camINPChosenCamera.fCAMPitch > 89.f) {
-            camINPChosenCamera.fCAMPitch = 89.f;
+        if (camINPChosenCamera.fCAMPitch > (GLfloat)89.f) {
+            camINPChosenCamera.fCAMPitch = (GLfloat)89.f;
         }
-        if (camINPChosenCamera.fCAMPitch < -89.f) {
-            camINPChosenCamera.fCAMPitch = -89.f;
+        if (camINPChosenCamera.fCAMPitch < (GLfloat)(- 89.f)) {
+            camINPChosenCamera.fCAMPitch = (GLfloat)(- 89.f);
         }
 
         glm::vec3 front;
@@ -133,7 +145,7 @@ void CInputs::INPAddingKeybind(std::string function_name, int key) {
 }
 
 void CInputs::INPWriteMapBindingsOnTxtFile() {
-    int number_of_binds = mapStrIntINPKeybinds.size();
+    int number_of_binds = (int)mapStrIntINPKeybinds.size();
     if (number_of_binds == 0) {
         CException exception(MAP_KEYBINDS_EMPTY);
         throw(exception);

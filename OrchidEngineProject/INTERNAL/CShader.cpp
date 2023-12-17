@@ -27,8 +27,6 @@ CShader::CShader(const GLchar* vertexPath, const GLchar* fragmentPath) {
 	catch (std::ifstream::failure e) {
 		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 	}
-	///// Faut-il rajouter la suite du Shader.h ? //////
-	//Peut-être faire jusqu'au linkage ?
 	const GLchar* vShaderCode = strSHAVertexCode.c_str();
 	const GLchar* fShaderCode = strSHAFragmentCode.c_str();
 	//Compile shaders

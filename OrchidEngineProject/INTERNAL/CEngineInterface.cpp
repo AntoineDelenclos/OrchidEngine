@@ -27,17 +27,16 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
     vec3EGINewEntitySpecular = glm::vec3(1.0f, 1.0f, 1.0f);
     fEGINewEntityShininess = 1.0f;
     fEGINewEntityTransparency = 1.0f;
-
-    
-    vec3EGITestLightColor = engine.testLight.vec3LIGColorLight;
-    vec3EGITestLightPosition = engine.testLight.vec3ENTWorldPosition;
-    gfEGITestLightAmbientIntensity = engine.testLight.gfLIGAmbientIntensity;
-    gfEGITestLightDiffuseStrength = engine.testLight.gfLIGDiffuseStrength;
-    gfEGITestLightSpecularStrength = engine.testLight.gfLIGSpecularStrength;
+    //New entity light
+    pgfEGINewLightColor[0] = 1.f; pgfEGINewLightColor[1] = 1.f; pgfEGINewLightColor[2] = 1.f;
+    gfEGINewLightAmbientIntensity = 0.5f;
 
     //Entity modifications via interface
     fEGINewX = 0.f; fEGINewY = 0.f; fEGINewZ = 0.f;
     gfEGINewRatio = 1.f;
+    fEGINewDirectionX = 1.0f; fEGINewDirectionY = 1.0f; fEGINewDirectionZ = 1.0f;
+    fEGINewKC = 1.0f; fEGINewKL = 0.09f; fEGINewKQ = 0.032f;
+
 
     iEGITextureNumber = 0;
     rdrEGIRender = CRender();
@@ -99,12 +98,6 @@ void CEngineInterface::EGIEngineModule(CEngine &engine) {
             ImPlot::EndPlot();
         }
     }
-    ImGui::ColorPicker3("Light color vec", (float*)&vec3EGITestLightColor);
-    ImGui::SliderFloat("Light ambient intensity", &gfEGITestLightAmbientIntensity, 0.f, 1.f);
-    ImGui::SliderFloat("Light diffuse strength", &gfEGITestLightDiffuseStrength, 0.f, 1.f);
-    ImGui::SliderFloat("Light specular strength", &gfEGITestLightSpecularStrength, 0.f, 256.f);
-    ImGui::SliderFloat3("Light position", (float*)&vec3EGITestLightPosition, -10.f, 10.f);
-
     ImGui::ColorEdit4("Background color", engine.pgfENGBackgroundColor);
     ImGui::Checkbox("Wireframe display", &bEGIWireframeChecked);
 
@@ -131,9 +124,9 @@ void CEngineInterface::EGIInputsModule(CEngine &engine) {
 
 //Interface for textures
 void CEngineInterface::EGITexturesModule(CEngine &engine) {
-    ImGui::SetNextWindowSizeConstraints(ImVec2(SIZE_TEXTURE_INTERFACE, 0), ImVec2(engine.iENGScreenWidth, engine.iENGScreenHeight));
+    ImGui::SetNextWindowSizeConstraints(ImVec2(SIZE_TEXTURE_INTERFACE, 0), ImVec2((float)engine.iENGScreenWidth, (float)engine.iENGScreenHeight));
     ImGui::Begin("Textures");
-    int nombre_texture_par_ligne = ImGui::GetWindowSize()[0]/SIZE_TEXTURE_INTERFACE;
+    int nombre_texture_par_ligne = (int)(ImGui::GetWindowSize()[0]/SIZE_TEXTURE_INTERFACE);
     ImGui::BeginChild("Textures panel", ImVec2(0, 0), true);
     for (int boucle_tex = 0; boucle_tex < engine.uiENGNumberOfTexturesFile; boucle_tex++) {
         //On doit cast le numero de texture GLuint vers (void*)(intptr_t) car ImGui demande un ImTextureId et vu que c'est propre à chaque API
@@ -153,49 +146,133 @@ void CEngineInterface::EGITexturesModule(CEngine &engine) {
     ImGui::End();
 }
 
-//Interface module related to entities 
-void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
+void CEngineInterface::EGINewEntityModule(CEngine& engine) {
+
+}
+
+void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
     ImGui::Begin("Entities");
-    static int selectedEntity = 0;
+    static int selectedEntity_cube = -1;
+    static int selectedEntity_dir_light = -1;
+    static int selectedEntity_point_light = -1;
+    static int selectedEntity_spot_light = -1;
+    static int selectedType = -1; //Default -1 ; 0 pour cube, 1 pour directional, etc. Permet de faire en sorte qu'après sélection
+    //de différentes entités de types différents, seule la dernière entité sélectionnée ait ses attributs de modifiable
 
     ImGui::Columns(3);
     ImGui::Checkbox("New entity", &bEGICreateEntitySubModule);
-
-    ImGui::BeginChild("Entity panel", ImVec2(180, 0), true);
-    for (int nb_ent = 0; nb_ent < engine.iENGGetTotalNumberOfEntities(); nb_ent++) {
-        // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
-        char label[128];
-        if (nb_ent < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
-            sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(),  nb_ent);
-        }
-        if (nb_ent >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
-            sprintf_s(label, engine.pligENGLightEntitiesList[nb_ent-engine.iENGGetNumberOfEntitiesTypeX(cube)].strENTName.c_str(), nb_ent);
-        }
-        if (ImGui::Selectable(label, selectedEntity == nb_ent)) {
-            selectedEntity = nb_ent;
-            if (selectedEntity < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
-                unsigned int pos_cub = selectedEntity;
-                fEGINewX = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
-                fEGINewY = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
-                fEGINewZ = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
-                gfEGINewRatio = engine.pcubENGCubeEntitiesList[pos_cub].gfCUBScaleRatio;
-            }
-            if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
-                unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
-                fEGINewX = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
-                fEGINewY = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
-                fEGINewZ = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
-                gfEGINewRatio = engine.pligENGLightEntitiesList[pos_lig].gfLIGScaleRatio;
+    
+    std::string strHeaderCube = "Cube entities ("; strHeaderCube += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(cube)); strHeaderCube += ')';
+    if (ImGui::CollapsingHeader(strHeaderCube.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) { //Mettre en DefaultOpen permet de réouvrir si on ajoute une entité du type correspondant
+        int draw_lines_cube = engine.iENGGetNumberOfEntitiesTypeX(cube);
+        static int max_height_in_lines_cube = 5;
+        ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+        ImGui::DragInt("Max Height (in Lines) Cubes", &max_height_in_lines_cube, 0.2f);
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 1), ImVec2(FLT_MAX, ImGui::GetTextLineHeightWithSpacing() * max_height_in_lines_cube));
+        if (ImGui::BeginChild("ConstrainedChildCube", ImVec2(-FLT_MIN, 0.0f), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY)) {
+            for (int nb_ent = 0; nb_ent < draw_lines_cube; nb_ent++) {
+                char label[128];
+                sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(), nb_ent);
+                if (ImGui::Selectable(label, selectedEntity_cube == nb_ent)) {
+                    selectedEntity_cube = nb_ent;
+                    selectedType = 0;
+                    fEGINewX = engine.pcubENGCubeEntitiesList[selectedEntity_cube].vec3ENTWorldPosition.x;
+                    fEGINewY = engine.pcubENGCubeEntitiesList[selectedEntity_cube].vec3ENTWorldPosition.y;
+                    fEGINewZ = engine.pcubENGCubeEntitiesList[selectedEntity_cube].vec3ENTWorldPosition.z;
+                    gfEGINewRatio = engine.pcubENGCubeEntitiesList[selectedEntity_cube].gfCUBScaleRatio;
+                }
             }
         }
+        ImGui::EndChild();
     }
-    ImGui::EndChild();
+    std::string strHeaderDirLight = "Directional light entities ("; strHeaderDirLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(dir_light)); strHeaderDirLight += ')';
+    if (ImGui::CollapsingHeader(strHeaderDirLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+        int draw_lines_directional = engine.iENGGetNumberOfEntitiesTypeX(dir_light);
+        static int max_height_in_lines_directional = 5;
+        ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+        ImGui::DragInt("Max Height (in Lines) Directional Lights", &max_height_in_lines_directional, 0.2f);
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 1), ImVec2(FLT_MAX, ImGui::GetTextLineHeightWithSpacing() * max_height_in_lines_directional));
+        if (ImGui::BeginChild("ConstrainedChildDirectional", ImVec2(-FLT_MIN, 0.0f), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY)) {
+            for (int nb_ent = 0; nb_ent < draw_lines_directional; nb_ent++) {
+                char label[128];
+                sprintf_s(label, engine.pligENGDirectionalLightsList[nb_ent].strENTName.c_str(), nb_ent);
+                if (ImGui::Selectable(label, selectedEntity_dir_light == nb_ent)) {
+                    selectedEntity_dir_light = nb_ent;
+                    selectedType = 1;
+                    fEGINewX = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3ENTWorldPosition.x;
+                    fEGINewY = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3ENTWorldPosition.y;
+                    fEGINewZ = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3ENTWorldPosition.z;
+                    gfEGINewRatio = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].gfLIGScaleRatio;
+                    fEGINewDirectionX = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3LIGDirection.x;
+                    fEGINewDirectionY = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3LIGDirection.y;
+                    fEGINewDirectionZ = engine.pligENGDirectionalLightsList[selectedEntity_dir_light].vec3LIGDirection.z;
+                }
+            }
+        }
+        ImGui::EndChild();
+    }
+    
+    std::string strHeaderPointLight = "Point light entities ("; strHeaderPointLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(point_light)); strHeaderPointLight += ')';
+    if (ImGui::CollapsingHeader(strHeaderPointLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+        int draw_lines_point = engine.iENGGetNumberOfEntitiesTypeX(point_light);
+        static int max_height_in_lines_point = 5;
+        ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+        ImGui::DragInt("Max Height (in Lines) Point Lights", &max_height_in_lines_point, 0.2f);
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 1), ImVec2(FLT_MAX, ImGui::GetTextLineHeightWithSpacing() * max_height_in_lines_point));
+        if (ImGui::BeginChild("ConstrainedChildPoint", ImVec2(-FLT_MIN, 0.0f), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY)) {
+            for (int nb_ent = 0; nb_ent < draw_lines_point; nb_ent++) {
+                // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
+                char label[128];
+                sprintf_s(label, engine.pligENGPointLightsList[nb_ent].strENTName.c_str(), nb_ent);
+                if (ImGui::Selectable(label, selectedEntity_point_light == nb_ent)) {
+                    selectedEntity_point_light = nb_ent;
+                    selectedType = 2;
+                    fEGINewX = engine.pligENGPointLightsList[selectedEntity_point_light].vec3ENTWorldPosition.x;
+                    fEGINewY = engine.pligENGPointLightsList[selectedEntity_point_light].vec3ENTWorldPosition.y;
+                    fEGINewZ = engine.pligENGPointLightsList[selectedEntity_point_light].vec3ENTWorldPosition.z;
+                    gfEGINewRatio = engine.pligENGPointLightsList[selectedEntity_point_light].gfLIGScaleRatio;
+                    fEGINewKC = engine.pligENGPointLightsList[selectedEntity_point_light].fLIGPointKC;
+                    fEGINewKL = engine.pligENGPointLightsList[selectedEntity_point_light].fLIGPointKL;
+                    fEGINewKQ = engine.pligENGPointLightsList[selectedEntity_point_light].fLIGPointKQ;
+                }
+            }
+        }
+        ImGui::EndChild();
+    }
 
+    std::string strHeaderSpotLight = "Spotlight entities ("; strHeaderSpotLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(spot_light)); strHeaderSpotLight += ')';
+    if (ImGui::CollapsingHeader(strHeaderSpotLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+        int draw_lines_spot = engine.iENGGetNumberOfEntitiesTypeX(spot_light);
+        static int max_height_in_lines_spot = 5;
+        ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
+        ImGui::DragInt("Max Height (in Lines) SpotLights", &max_height_in_lines_spot, 0.2f);
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 1), ImVec2(FLT_MAX, ImGui::GetTextLineHeightWithSpacing() * max_height_in_lines_spot));
+        if (ImGui::BeginChild("ConstrainedChildSpot", ImVec2(-FLT_MIN, 0.0f), ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY)) {
+            for (int nb_ent = 0; nb_ent < draw_lines_spot; nb_ent++) {
+                // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
+                char label[128];
+                sprintf_s(label, engine.pligENGSpotLightsList[nb_ent].strENTName.c_str(), nb_ent);
+                if (ImGui::Selectable(label, selectedEntity_spot_light == nb_ent)) {
+                    selectedEntity_spot_light = nb_ent;
+                    selectedType = 3;
+                    fEGINewX = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3ENTWorldPosition.x;
+                    fEGINewX = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3ENTWorldPosition.y;
+                    fEGINewX = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3ENTWorldPosition.z;
+                    gfEGINewRatio = engine.pligENGSpotLightsList[selectedEntity_spot_light].gfLIGScaleRatio;
+                    fEGINewDirectionX = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3LIGDirection.x;
+                    fEGINewDirectionY = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3LIGDirection.y;
+                    fEGINewDirectionZ = engine.pligENGSpotLightsList[selectedEntity_spot_light].vec3LIGDirection.z;
+                }
+            }
+        }
+        ImGui::EndChild();
+    }
+    //Partie qui gère la colomne de création d'une nouvelle entité
     if (bEGICreateEntitySubModule == true) {
         ImGui::NextColumn();
         static int entityTypeCombo;
-        const char* entityItems[] = { "Cube", "Light" };
-        ImGui::Combo("Entity type", &entityTypeCombo, "Cube\0" "Light\0");
+        const char* entityItems[] = { "Cube", "Directional Light", "Point Light", "SpotLight" };
+        ImGui::Combo("Entity type", &entityTypeCombo, "Cube\0" "Directional Light\0" "Point Light\0" "SpotLight\0");
         //Sliders for XYZ Axis position of the new entity
         const char* axisSliders[] = { "X", "Y", "Z" };
         for (int boucle_axe = 0; boucle_axe < 3; boucle_axe++) {
@@ -206,7 +283,7 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             std::string axisRound = axisSliders[boucle_axe];
             axisRound += " Round value";
             if (ImGui::SmallButton(axisRound.c_str())) {
-                pgfEGINewEntityXYZPos[boucle_axe] = (int)round(pgfEGINewEntityXYZPos[boucle_axe]);
+                pgfEGINewEntityXYZPos[boucle_axe] = round(pgfEGINewEntityXYZPos[boucle_axe]);
             }
             ImGui::NewLine();
             int button_values[6] = { -100,-10,-1,1,10,100 };
@@ -232,10 +309,7 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             ImGui::ColorPicker3("Color's light", pgfEGINewLightColor);
             ImGui::SliderFloat("Ambient Intensity", &gfEGINewLightAmbientIntensity, 0.f, 1.f);
         }
-        
-        //ImStrncpy(newEntityTexturePath, "../../../Assets/", sizeof("../../../Assets/"));
-        char newEntityTexturePath[512] = "../../../Assets/";
-        ImGui::InputText("Texture PATH", newEntityTexturePath, sizeof(newEntityTexturePath));
+
         if (ImGui::SmallButton("Create entity")) {
             //Create a new entity with the set parameters and reset values to default ones
             entity_type_enum newEntityType;
@@ -252,17 +326,17 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
                 engine.ENGAddCubeEntity(newCube); //Modifier pour ajouter dans les listes correspondantes (séparer light et cube par ex.)
             }
             if (entityTypeCombo == 1) {
-                newEntityType = light;
+                newEntityType = dir_light;
                 unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
             }
         }
     }
     ImGui::NextColumn();
     //Display informations about selected entity : ID, Position X,Y,Z et texture pour l'instant
-    //Si on a une entité cube
-    if (selectedEntity < engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+    //Pour nos différentes entités cubes
+    if (selectedEntity_cube >= 0 && selectedType == 0) {
         float Xc, Yc, Zc;
-        unsigned int pos_cub = selectedEntity;
+        int pos_cub = selectedEntity_cube;
         Xc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
         Yc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.y;
         Zc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.z;
@@ -282,39 +356,136 @@ void CEngineInterface::EGIEntitiesModule(CEngine &engine) {
             engine.pcubENGCubeEntitiesList[pos_cub].CUBScaleEntitySize(gfEGINewRatio);
             rdrEGIRender.RDRCreateMandatoryForCube(engine, engine.pcubENGCubeEntitiesList[pos_cub], engine.pcubENGCubeEntitiesList[pos_cub].uiCUBId);
         }
-        ImGui::Text("Texture :"); ImGui::SameLine();
-        if (ImGui::ImageButton((void*)(intptr_t)(engine.pcubENGCubeEntitiesList[pos_cub].uiENTTextureEngineNumber+1), ImVec2(SIZE_TEXTURE_INTERFACE, SIZE_TEXTURE_INTERFACE))) {
+        ImGui::Text("Texture :"); ImGui::SameLine(); //It's also the diffuse map
+        if (ImGui::ImageButton((void*)(intptr_t)(engine.pcubENGCubeEntitiesList[pos_cub].uiENTTextureEngineNumber + 1), ImVec2(SIZE_TEXTURE_INTERFACE, SIZE_TEXTURE_INTERFACE))) {
             EGITexturesModule(engine);
             engine.pcubENGCubeEntitiesList[pos_cub].uiENTTextureEngineNumber = iEGITextureNumber;
         }
+        ImGui::Text("Specular map :"); ImGui::SameLine();
+        if (ImGui::ImageButton((void*)(intptr_t)(engine.pcubENGCubeEntitiesList[pos_cub].uiCUBSpecularTextureEngineNumber + 1), ImVec2(SIZE_TEXTURE_INTERFACE, SIZE_TEXTURE_INTERFACE))) {
+            EGITexturesModule(engine);
+            std::cout << "actuel = " << engine.pcubENGCubeEntitiesList[pos_cub].uiCUBSpecularTextureEngineNumber << std::endl;
+            engine.pcubENGCubeEntitiesList[pos_cub].uiCUBSpecularTextureEngineNumber = iEGITextureNumber;
+            std::cout << "nouveau = " << iEGITextureNumber << std::endl;
+        }
     }
-    //Si on a une light (actuellement avec les compteurs d'entités mais il faudra modifier les conditions lorsqu'il y aura d'autres entités)
-    if (selectedEntity >= engine.iENGGetNumberOfEntitiesTypeX(cube)) {
+    //Cas d'une Directional Light
+    if (selectedEntity_dir_light >= 0 && selectedType == 1) { 
+        unsigned int pos_lig = selectedEntity_dir_light;
         float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
-        unsigned int pos_lig = selectedEntity - engine.iENGGetNumberOfEntitiesTypeX(cube);
-        Xl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.x;
-        Yl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.y;
-        Zl = engine.pligENGLightEntitiesList[pos_lig].vec3ENTWorldPosition.z;
+        Xl = engine.pligENGDirectionalLightsList[pos_lig].vec3ENTWorldPosition.x;
+        Yl = engine.pligENGDirectionalLightsList[pos_lig].vec3ENTWorldPosition.y;
+        Zl = engine.pligENGDirectionalLightsList[pos_lig].vec3ENTWorldPosition.z;
         ImGui::SliderFloat("X", &fEGINewX, -10.f, 10.f);
         ImGui::SliderFloat("Y", &fEGINewY, -10.f, 10.f);
         ImGui::SliderFloat("Z", &fEGINewZ, -10.f, 10.f);
         float difXl = fEGINewX - Xl; float difYl = fEGINewY - Yl; float difZl = fEGINewZ - Zl;
         if (difXl != 0 || difYl != 0 || difZl != 0) {
-            engine.pligENGLightEntitiesList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
-            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGLightEntitiesList[pos_lig], engine.pligENGLightEntitiesList[pos_lig].uiLIGId);
+            engine.pligENGDirectionalLightsList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGDirectionalLightsList[pos_lig], engine.pligENGDirectionalLightsList[pos_lig].uiLIGId);
         }
         ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xl, Yl, Zl);
         ImGui::SliderFloat("Scale Ratio", &gfEGINewRatio, 0.01f, 10.f); //Update the scale ratio of the light cube (when update is needed)
-        GLfloat ScaleRatio = engine.pligENGLightEntitiesList[pos_lig].gfLIGScaleRatio;
+        GLfloat ScaleRatio = engine.pligENGDirectionalLightsList[pos_lig].gfLIGScaleRatio;
         GLfloat difScaleRatio = gfEGINewRatio - ScaleRatio;
         if (difScaleRatio != 0) {
-            engine.pligENGLightEntitiesList[pos_lig].LIGScaleEntitySize(gfEGINewRatio);
-            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGLightEntitiesList[pos_lig], engine.pligENGLightEntitiesList[pos_lig].uiLIGId);
+            engine.pligENGDirectionalLightsList[pos_lig].LIGScaleEntitySize(gfEGINewRatio);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGDirectionalLightsList[pos_lig], engine.pligENGDirectionalLightsList[pos_lig].uiLIGId);
         }
-        ImGui::ColorEdit3("Light Color", engine.pligENGLightEntitiesList[pos_lig].gfLIGColorLight); //Update the light's color and settings
-        ImGui::SliderFloat("Ambient Intensity", &engine.pligENGLightEntitiesList[pos_lig].gfLIGAmbientIntensity, 0.f, 1.f);
-        ImGui::SliderFloat("Diffuse Strength", &engine.pligENGLightEntitiesList[pos_lig].gfLIGDiffuseStrength, 0.f, 1.f);
-        ImGui::SliderFloat("Specular Strength", &engine.pligENGLightEntitiesList[pos_lig].gfLIGSpecularStrength, 0.f, 1.f);
+        ImGui::ColorEdit3("Light Color", engine.pligENGDirectionalLightsList[pos_lig].gfLIGColorLight); //Update the light's color and settings
+        float Xd, Yd, Zd; //Update the light's direction
+        Xd = engine.pligENGDirectionalLightsList[pos_lig].vec3LIGDirection.x;
+        Yd = engine.pligENGDirectionalLightsList[pos_lig].vec3LIGDirection.y;
+        Zd = engine.pligENGDirectionalLightsList[pos_lig].vec3LIGDirection.z;
+        ImGui::SliderFloat("X Direction", &fEGINewDirectionX, -10.f, 10.f);
+        ImGui::SliderFloat("Y Direction", &fEGINewDirectionY, -10.f, 10.f);
+        ImGui::SliderFloat("Z Direction", &fEGINewDirectionZ, -10.f, 10.f);
+        float difXd = fEGINewDirectionX - Xd; float difYd = fEGINewDirectionY - Yd; float difZd = fEGINewDirectionZ - Zd;
+        if (difXd != 0 || difYd != 0 || difZd != 0) {
+            engine.pligENGDirectionalLightsList[pos_lig].LIGChangeLightDirection(glm::vec3(fEGINewDirectionX, fEGINewDirectionY, fEGINewDirectionZ));
+        }
+        ImGui::SliderFloat("Ambient Intensity", &engine.pligENGDirectionalLightsList[pos_lig].gfLIGAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &engine.pligENGDirectionalLightsList[pos_lig].gfLIGDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &engine.pligENGDirectionalLightsList[pos_lig].gfLIGSpecularStrength, 0.f, 256.f);
+    }
+    //Cas d'une Point Light
+    if (selectedEntity_point_light >= 0 && selectedType == 2) {
+        unsigned int pos_lig = selectedEntity_point_light;
+        float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
+        Xl = engine.pligENGPointLightsList[pos_lig].vec3ENTWorldPosition.x;
+        Yl = engine.pligENGPointLightsList[pos_lig].vec3ENTWorldPosition.y;
+        Zl = engine.pligENGPointLightsList[pos_lig].vec3ENTWorldPosition.z;
+        ImGui::SliderFloat("X", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("Y", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("Z", &fEGINewZ, -10.f, 10.f);
+        float difXl = fEGINewX - Xl; float difYl = fEGINewY - Yl; float difZl = fEGINewZ - Zl;
+        if (difXl != 0 || difYl != 0 || difZl != 0) {
+            engine.pligENGPointLightsList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGPointLightsList[pos_lig], engine.pligENGPointLightsList[pos_lig].uiLIGId);
+        }
+        ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xl, Yl, Zl);
+        ImGui::SliderFloat("Scale Ratio", &gfEGINewRatio, 0.01f, 10.f); //Update the scale ratio of the light cube (when update is needed)
+        GLfloat ScaleRatio = engine.pligENGPointLightsList[pos_lig].gfLIGScaleRatio;
+        GLfloat difScaleRatio = gfEGINewRatio - ScaleRatio;
+        if (difScaleRatio != 0) {
+            engine.pligENGPointLightsList[pos_lig].LIGScaleEntitySize(gfEGINewRatio);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGPointLightsList[pos_lig], engine.pligENGPointLightsList[pos_lig].uiLIGId);
+        }
+        ImGui::ColorEdit3("Light Color", engine.pligENGPointLightsList[pos_lig].gfLIGColorLight); //Update the light's color and settings
+        float KC = engine.pligENGPointLightsList[pos_lig].fLIGPointKC;
+        float KL = engine.pligENGPointLightsList[pos_lig].fLIGPointKL;
+        float KQ = engine.pligENGPointLightsList[pos_lig].fLIGPointKQ;
+        ImGui::SliderFloat("KC Constant", &fEGINewKC, 0.f, 1.f);
+        ImGui::SliderFloat("KL Constant", &fEGINewKL, 0.f, 1.f);
+        ImGui::SliderFloat("KQ Constant", &fEGINewKQ, 0.f, 1.f);
+        float difKC = fEGINewKC - KC; float difKL = fEGINewKL - KL; float difKQ = fEGINewKQ - KQ;
+        if (difKC != 0 || difKL != 0 || difKQ != 0) {
+            engine.pligENGPointLightsList[pos_lig].LIGChangeKConstants(fEGINewKC, fEGINewKL, fEGINewKQ);
+        }
+        ImGui::SliderFloat("Ambient Intensity", &engine.pligENGPointLightsList[pos_lig].gfLIGAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &engine.pligENGPointLightsList[pos_lig].gfLIGDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &engine.pligENGPointLightsList[pos_lig].gfLIGSpecularStrength, 0.f, 256.f);
+    }
+    //Cas d'une Spotlight
+    if (selectedEntity_spot_light >= 0 && selectedType == 3) {
+        unsigned int pos_lig = selectedEntity_spot_light;
+        float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
+        Xl = engine.pligENGSpotLightsList[pos_lig].vec3ENTWorldPosition.x;
+        Yl = engine.pligENGSpotLightsList[pos_lig].vec3ENTWorldPosition.y;
+        Zl = engine.pligENGSpotLightsList[pos_lig].vec3ENTWorldPosition.z;
+        ImGui::SliderFloat("X", &fEGINewX, -10.f, 10.f);
+        ImGui::SliderFloat("Y", &fEGINewY, -10.f, 10.f);
+        ImGui::SliderFloat("Z", &fEGINewZ, -10.f, 10.f);
+        float difXl = fEGINewX - Xl; float difYl = fEGINewY - Yl; float difZl = fEGINewZ - Zl;
+        if (difXl != 0 || difYl != 0 || difZl != 0) {
+            engine.pligENGSpotLightsList[pos_lig].LIGChangeWorldPosition(glm::vec3(fEGINewX, fEGINewY, fEGINewZ));
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGSpotLightsList[pos_lig], engine.pligENGSpotLightsList[pos_lig].uiLIGId);
+        }
+        ImGui::Text("Position : X = %.3f, Y = %.3f, Z = %.3f", Xl, Yl, Zl);
+        ImGui::SliderFloat("Scale Ratio", &gfEGINewRatio, 0.01f, 10.f); //Update the scale ratio of the light cube (when update is needed)
+        GLfloat ScaleRatio = engine.pligENGSpotLightsList[pos_lig].gfLIGScaleRatio;
+        GLfloat difScaleRatio = gfEGINewRatio - ScaleRatio;
+        if (difScaleRatio != 0) {
+            engine.pligENGSpotLightsList[pos_lig].LIGScaleEntitySize(gfEGINewRatio);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, engine.pligENGSpotLightsList[pos_lig], engine.pligENGSpotLightsList[pos_lig].uiLIGId);
+        }
+        ImGui::ColorEdit3("Light Color", engine.pligENGSpotLightsList[pos_lig].gfLIGColorLight); //Update the light's color and settings
+        float Xd, Yd, Zd; //Update the light's direction
+        Xd = engine.pligENGSpotLightsList[pos_lig].vec3LIGDirection.x;
+        Yd = engine.pligENGSpotLightsList[pos_lig].vec3LIGDirection.y;
+        Zd = engine.pligENGSpotLightsList[pos_lig].vec3LIGDirection.z;
+        ImGui::SliderFloat("X Direction", &fEGINewDirectionX, -10.f, 10.f);
+        ImGui::SliderFloat("Y Direction", &fEGINewDirectionY, -10.f, 10.f);
+        ImGui::SliderFloat("Z Direction", &fEGINewDirectionZ, -10.f, 10.f);
+        float difXd = fEGINewDirectionX - Xd; float difYd = fEGINewDirectionY - Yd; float difZd = fEGINewDirectionZ - Zd;
+        if (difXd != 0 || difYd != 0 || difZd != 0) {
+            engine.pligENGSpotLightsList[pos_lig].LIGChangeLightDirection(glm::vec3(fEGINewDirectionX, fEGINewDirectionY, fEGINewDirectionZ));
+        }
+        ImGui::SliderFloat("Inner CutOff Angle", &engine.pligENGSpotLightsList[pos_lig].fLIGInnerCutOff, 0.f, 1.f);
+        ImGui::SliderFloat("Outer CutOff Angle", &engine.pligENGSpotLightsList[pos_lig].fLIGOuterCutOff, 0.f, 1.f);
+        ImGui::SliderFloat("Ambient Intensity", &engine.pligENGSpotLightsList[pos_lig].gfLIGAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &engine.pligENGSpotLightsList[pos_lig].gfLIGDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &engine.pligENGSpotLightsList[pos_lig].gfLIGSpecularStrength, 0.f, 256.f);
     }
     ImGui::SameLine();
     ImGui::End();
@@ -353,11 +524,6 @@ void CEngineInterface::EGIInterfaceToEngine(CEngine &engine) {
     engine.ENGSetSaturation(gfEGISaturation);
     engine.ENGSetGamma(gfEGIGamma);
     engine.ENGSetNormRec(bEGINormeRec_709);
-    engine.testLight.vec3LIGColorLight = vec3EGITestLightColor;
-    engine.testLight.gfLIGAmbientIntensity = gfEGITestLightAmbientIntensity;
-    engine.testLight.gfLIGDiffuseStrength = gfEGITestLightDiffuseStrength;
-    engine.testLight.gfLIGSpecularStrength = gfEGITestLightSpecularStrength;
-    engine.testLight.vec3ENTWorldPosition = vec3EGITestLightPosition;
 }
 
 void CEngineInterface::EGIUpdate(CEngine &engine) { //Update the display of the interface at each frame time
@@ -370,7 +536,7 @@ void CEngineInterface::EGIUpdate(CEngine &engine) { //Update the display of the 
     EGIEngineModule(engine);
     EGIInputsModule(engine);
     EGITexturesModule(engine);
-    EGIEntitiesModule(engine);
+    EGIEntitiesListsModule(engine);
     EGICameraModule(engine, engine.inpENGInputs.camINPChosenCamera);
 
     EGIWireframeUpdate();

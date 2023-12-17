@@ -1,4 +1,0 @@
-fichier de test
-je sais pas si ca marche 123: testeur;
-? ca marche ouuuu ?
-RIGHT_DASH:68

@@ -17,6 +17,7 @@ public:
 	float fCUBTransparency;
     //Texture
 	unsigned int uiCUBTextureEngineNumber;
+    unsigned int uiCUBSpecularTextureEngineNumber;
     //Les vertices d'un cube de base
     static const GLfloat* cubeVertices() {
         //Par défaut dans OpenGL les valeurs de l'écran vont de -1 à 1

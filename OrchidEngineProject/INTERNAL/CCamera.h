@@ -25,6 +25,7 @@ public:
 	glm::vec3 vec3CAMCameraUp;
 	glm::vec3 vec3CAMCameraRight;
 
+	glm::mat4 mat4CAMModel;
 	glm::mat4 mat4CAMView;
 	glm::mat4 mat4CAMProjection;
 
@@ -32,6 +33,4 @@ public:
 
 	CCamera();
 	~CCamera();
-
-	void CAMUpdate();
 };

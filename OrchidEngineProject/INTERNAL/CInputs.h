@@ -25,15 +25,15 @@ class CEngine;
 
 class CInputs {
 private:
-	glm::mat4 mat4INPMovement;
 public:
+	glm::mat4 mat4INPMovement;
 	std::string strINPKeyBindsPathFile;
 	double dINPDiffTime;
 	CCamera camINPChosenCamera;
 	int iINPCameraState;
-	float fINPLastMouseX;
-	float fINPLastMouseY;
-	float fINPSensitivity;
+	double dINPLastMouseX;
+	double dINPLastMouseY;
+	double dINPSensitivity;
 	bool bINPFirstMouse;
 	CInputs();
 	CInputs(CCamera &camera);

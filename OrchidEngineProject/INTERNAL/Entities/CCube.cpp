@@ -29,6 +29,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
 	uiENTTextureEngineNumber = texture_number;
+	uiCUBSpecularTextureEngineNumber = 5;
 	//Material values
 	vec3CUBAmbient = glm::vec3(1.0f, 1.0f, 1.0f);
 	vec3CUBDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -56,6 +57,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;
 	uiENTTextureEngineNumber = texture_number;
+	uiCUBSpecularTextureEngineNumber = 5;
 	//Material values
 	vec3CUBAmbient = ambient;
 	vec3CUBDiffuse = diffuse;

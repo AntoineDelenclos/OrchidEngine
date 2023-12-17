@@ -21,7 +21,6 @@
 #define GLEW_STATIC //car on lie via gl32s.lib
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-//#include <C:\Users\antoi\OneDrive\Bureau\Projet J\Code\OpenGLProject1\OpenGLProject1\Shader.h>
 
 #include "GlobalTools.h"
 #include "CException.h"
@@ -32,7 +31,7 @@
 #include "Entities/CCube.h"
 #include "Entities/CLight.h"
 
-#define TYPES_OF_ENTITIES 6
+#define TYPES_OF_ENTITIES 8 //2 : directional, 3 : point, 4 : spot
 
 class CTexture;
 
@@ -83,13 +82,19 @@ public:
 	CCube* pcubENGCubeEntitiesList; //A utiliser comme pour ptexENGAllTextures, un CEntity* peut etre mieux qu'un CEntity**
 	CLight* pligENGLightEntitiesList;
 
-	//Test Light
-	GLfloat* pgfENGTestLightColor;
-	GLfloat gfENGTestLightAmbientIntensity;// = 0.4f;
-	GLfloat gfENGTestLightDiffuseStrength;
-	GLfloat gfENGTestLightSpecularStrength;
-	glm::vec3 vec3ENGTestLightPosition;// = { 1.2f, 1.0f, 2.0f };
-	CLight testLight;
+	//Lights
+	int iENGNumberDirectionalLights;
+	int iENGNumberPointLights;
+	int iENGNumberSpotLights;
+	int* piENGDirectionalLightsID;
+	int* piENGPointLightsID;
+	int* piENGSpotLightsID;
+	CLight* pligENGDirectionalLightsList;
+	CLight* pligENGPointLightsList;
+	CLight* pligENGSpotLightsList;
+
+	//For interface
+	std::map<std::string, int>mapStrIntENGNumberOfEachEntities;
 
 	//Textures
 	//List of all textures of the engine project
@@ -105,8 +110,12 @@ public:
 	int iENGMaxNumberVBO;
 	GLuint* puiENGVAOCubesEngine;
 	GLuint* puiENGVBOCubesEngine;
-	GLuint* puiENGVAOLightsEngine;
-	GLuint* puiENGVBOLightsEngine;
+	GLuint* puiENGVAODirectionalLightsEngine;
+	GLuint* puiENGVBODirectionalLightsEngine;
+	GLuint* puiENGVAOPointLightsEngine;
+	GLuint* puiENGVBOPointLightsEngine;
+	GLuint* puiENGVAOSpotLightsEngine;
+	GLuint* puiENGVBOSpotLightsEngine;
 
 	CEngine();
 	~CEngine();
@@ -151,6 +160,7 @@ public:
 	//Entity related
 	void ENGAddCubeEntity(CCube cube);
 	void ENGAddLightEntity(CLight light);
+	//void ENGRemoveCubeEntity(int id);
 	//unsigned int* puiENGEntitiesIdInTheLODArea();
 
 	//Textures related
