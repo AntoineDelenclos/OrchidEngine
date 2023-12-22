@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 
-//IMGUI
+//IMGUI Docking branch V1.90
 #include "../EXTERNAL/IMGUI/imgui.h"
 #include "../EXTERNAL/IMGUI/imgui_impl_glfw.h"
 #include "../EXTERNAL/IMGUI/imgui_impl_opengl3.h"
@@ -44,7 +44,8 @@ public:
 	GLfloat gfENGSaturation;
 	GLfloat gfENGGamma;
 	bool bENGNormeRec_709;
-	
+	bool bENGHasFocus;
+
 	//Render pipeline
 	//Il faudra charger "../../../Assets/nom_texture.extension" Dans pstrENGTexturesPath seul nom_texture.extension sera stocké
 	std::string strENGAssetsFolder;
@@ -160,7 +161,7 @@ public:
 	//Entity related
 	void ENGAddCubeEntity(CCube cube);
 	void ENGAddLightEntity(CLight light);
-	//void ENGRemoveCubeEntity(int id);
+	void ENGRemoveCubeEntity(CCube &cube);
 	//unsigned int* puiENGEntitiesIdInTheLODArea();
 
 	//Textures related

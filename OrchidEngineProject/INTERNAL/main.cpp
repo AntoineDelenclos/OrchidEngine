@@ -22,11 +22,22 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     engine.inpENGInputs.INPScrollCallback(window, xoffset, yoffset);
 }
+static void handleWindowFocus(GLFWwindow* window, int focused) {
+    if (focused == GL_TRUE) {
+        engine.bENGHasFocus = true;
+    }
+    else {
+        engine.bENGHasFocus = false;
+    }
+    std::cout << "Focus : " << engine.bENGHasFocus << std::endl;
+}
 
 int main() {
     engine.ENGStart();
     CEngineInterface engineInterface = CEngineInterface(engine);
     CRender render = CRender();
+
+    glfwSetWindowFocusCallback(engine.pwindowENGWindow, handleWindowFocus);
 
     glm::vec3 lightColor = glm::vec3(0.f, 0.66f, 0.4f);
     GLfloat lightColorFloat[3] = { 0.89f,0.66f,0.4f };
@@ -104,7 +115,7 @@ int main() {
     render.RDRCreateMandatoryForLight(engine, testLight_3, testLight_3.uiLIGId);
     engine.ENGAddLightEntity(testLight_3);
 
-    glm::vec3 Position_test_4 = glm::vec3(-1.f, -1.f, 2.f);
+    glm::vec3 Position_test_4 = glm::vec3(1.f, 3.f, 2.f);
     GLfloat colorlight4[3] = { 0.4f, 1.f, 0.2f };
 
     CLight testLight_4 = CLight(spot, engine.uiENGGetNextFreeGlobalID(), engine.uiENGGetNextFreeEntityID(spot_light), Position_test_4, glm::vec3(1.f, 1.f, 1.f), 0.91f, 0.82f, colorlight4, ambientIntensity, diffuseStrength, specularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", 3);
@@ -138,7 +149,6 @@ int main() {
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
 
-        engine.ENGFrameUpdate(); //Contains glfwPollEvents()
         render.RDRPostProcess(engine);
 
         engine.ENGLightUpdate();
@@ -203,6 +213,7 @@ int main() {
         engine.ENGPreUpdateInputsValues();
 
         glfwSwapBuffers(engine.pwindowENGWindow); //Swap front and back buffers
+        engine.ENGFrameUpdate(); //Contains glfwPollEvents()
 
         //Penser à bien mettre cette fonction dans CEngine car sinon le moteur ne va pas se limiter à un certain nombre de FPS
         if ( (1000.0 / engine.iENGGetFpsLimit()) > (1000*engine.dENGDiffTime) ){
@@ -212,7 +223,7 @@ int main() {
     }
 
     render.~CRender();
-    engineInterface.~CEngineInterface();
+    //engineInterface.~CEngineInterface(); //Enlève le abort mais bon c'est pas très propre sans l'appel au destructeur
     engine.~CEngine();
 
     glfwTerminate(); 

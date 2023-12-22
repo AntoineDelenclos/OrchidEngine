@@ -51,8 +51,6 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	pgfCUBVertices = temp_vertices;
 	uiCUBVerticesSize = 288;
 	gfCUBScaleRatio = 1.f;
-	//pgfENTVertices = temp_vertices;
-	//uiENTVerticesSize = 288;
 	vec3ENTWorldPosition = position;
 	pcENTVertexShaderName = vsFile;
 	pcENTFragmentShaderName = fragFile;

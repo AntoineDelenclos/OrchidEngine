@@ -10,12 +10,13 @@ CEngine::CEngine() {
 		CException exception(GLFW_INIT_ERREUR);
 		throw(exception);
 	}
-	uiENGWidth = 1280;
-	uiENGHeight = 960;
+	uiENGWidth = 1920; //1280
+	uiENGHeight = 1080; //960
 	pgfENGBackgroundColor[0] = 0.2f;
 	pgfENGBackgroundColor[1] = 0.4f;
 	pgfENGBackgroundColor[2] = 0.8f;
 	pgfENGBackgroundColor[3] = 1.0f;
+	
 
 	dENGPrevTime = 0.0; dENGCrntTime = 0.0; dENGDiffTime = 0.0;
 	uiENGFpsTempCounter = 0;
@@ -236,20 +237,25 @@ void CEngine::ENGStart() {
 	CTexture tex_5 = CTexture("container2.png", true);
 	tex_5.TEXBinding(*this);
 	ENGAddTextureToAllTexturesList(tex_5);
-	std::cout << tex_5.guiTEXGetNumeroTexture();
 	CTexture tex_5_specular = CTexture("container2_specular.png", true);
 	tex_5_specular.TEXBinding(*this);
 	ENGAddTextureToAllTexturesList(tex_5_specular);
-	std::cout << tex_5_specular.guiTEXGetNumeroTexture();
+	CTexture tex_s = CTexture("screenshot.png", true);
+	tex_s.TEXBinding(*this);
+	ENGAddTextureToAllTexturesList(tex_s);
 
 	glViewport(0, 0, iENGScreenWidth, iENGScreenHeight); //Redimensionne relativement à la taille d'écran
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND); //Permet d'activer le canal de transparence (alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	bENGHasFocus = true;
 }
 
 
 void CEngine::ENGChangeResolution(GLuint width, GLuint height) {
+	uiENGWidth = width; uiENGHeight = height;
+	iENGScreenWidth = width; iENGScreenHeight = height;
 	glfwSetWindowSize(pwindowENGWindow, width, height);
 }
 
@@ -370,8 +376,11 @@ void CEngine::ENGFrameUpdate() {
 	}
 	//Window state update
 	glfwPollEvents();//Poll for and process events
+	glfwGetFramebufferSize(pwindowENGWindow, &iENGScreenWidth, &iENGScreenHeight);
+	glViewport(0, 0, iENGScreenWidth, iENGScreenHeight);
 	glClearColor(pgfENGBackgroundColor[0], pgfENGBackgroundColor[1], pgfENGBackgroundColor[2], pgfENGBackgroundColor[3]); //Permet de vider le cache de ce qu'il y avait avant
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Et de mettre la couleur que l'on souhaite
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	//Rendering update
 	//ENGWireframeUpdate();
 	ENGCameraUpdate();
@@ -420,6 +429,15 @@ void CEngine::ENGAddLightEntity(CLight light) {
 	}
 }
 
+//Function to pass to the callback functions in inputs the values needed
+void CEngine::ENGPreUpdateInputsValues() {
+	inpENGInputs.dINPDiffTime = dENGDiffTime;
+}
+
+void CEngine::ENGRemoveCubeEntity(CCube& cube) {
+
+}
+
 ///// TEXTURES RELATED /////
 
 void CEngine::ENGAddTextureToAllTexturesList(CTexture texture) {
@@ -432,12 +450,6 @@ void CEngine::ENGAddTextureToAllTexturesList(CTexture texture) {
 		throw(exception);
 	}
 }
-
-//Function to pass to the callback functions in inputs the values needed
-void CEngine::ENGPreUpdateInputsValues() {
-	inpENGInputs.dINPDiffTime = dENGDiffTime;
-}
-
 
 
 ///////////////////////////////////////////////////////////////////////// CTEXTURE //////////////////////////////////////////////////////////////
