@@ -3,6 +3,7 @@
 CLight::CLight() {
 	enumENTType = dir_light;
 	uiENTId = 0;
+	bENTActive = true;
 	strENTName = "##";
 	vec3ENTWorldPosition = glm::vec3(0.0f);
 	pcENTVertexShaderName = NULL;
@@ -17,6 +18,7 @@ CLight::CLight(light_type_enum type, unsigned int id_global, unsigned int id_lig
 	enumLIGType = type; //Doit être égal à directional
 	uiENTId = id_global;
 	uiLIGId = id_light;
+	bENTActive = true;
 	strENTName = "Directional Light " + std::to_string(id_light);
 	GLfloat* temp_vertices = nullptr;
 	temp_vertices = new (GLfloat[180]);
@@ -46,6 +48,7 @@ CLight::CLight(light_type_enum type, unsigned int id_global, unsigned int id_lig
 	enumLIGType = type; //Doit être égal à point
 	uiENTId = id_global;
 	uiLIGId = id_light;
+	bENTActive = true;
 	strENTName = "Point Light " + std::to_string(id_light);
 	GLfloat* temp_vertices = nullptr;
 	temp_vertices = new (GLfloat[180]);
@@ -77,6 +80,7 @@ CLight::CLight(light_type_enum type, unsigned int id_global, unsigned int id_lig
 	enumLIGType = type; //Doit être égal à spot
 	uiENTId = id_global;
 	uiLIGId = id_light;
+	bENTActive = true;
 	strENTName = "Spot Light " + std::to_string(id_light);
 	GLfloat* temp_vertices = nullptr;
 	temp_vertices = new (GLfloat[180]);

@@ -29,6 +29,7 @@ struct Material{
 uniform Material material;
 
 struct DirectionalLight{
+	bool on;
 	vec3 color;
 	vec3 direction;
 	vec3 ambientIntensity;
@@ -40,6 +41,7 @@ uniform int number_dir_light;
 uniform DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
 
 struct PointLight{
+	bool on; //Si l'entité est active ou non
 	vec3 color;
 	vec3 position;
 	float constant;
@@ -54,6 +56,7 @@ uniform int number_point_light;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
 struct SpotLight{
+	bool on;
 	vec3 color;
 	vec3 position;
 	vec3 direction;
@@ -115,6 +118,10 @@ vec4 func_post_processing(vec4 col){
 }
 
 vec3 directional_light_calcul(DirectionalLight light, vec3 normal, vec3 view){
+	if (light.on == false){
+		return vec3(0.0,0.0,0.0);
+	}
+
 	vec3 lightDir = normalize(-light.direction);
 
 	vec3 ambientVec = light.ambientIntensity * material.ambient * light.color;
@@ -130,6 +137,10 @@ vec3 directional_light_calcul(DirectionalLight light, vec3 normal, vec3 view){
 }
 
 vec3 point_light_calcul(PointLight light, vec3 normal, vec3 view){
+	if (light.on == false){
+		return vec3(0.0,0.0,0.0);
+	}
+	
 	vec3 lightDir = normalize(light.position - crntPos);
 
 	vec3 ambientVec = light.ambientIntensity * material.ambient * light.color;
@@ -152,6 +163,10 @@ vec3 point_light_calcul(PointLight light, vec3 normal, vec3 view){
 }
 
 vec3 spot_light_calcul(SpotLight light, vec3 normal, vec3 view){
+	if (light.on == false){
+		return vec3(0.0,0.0,0.0);
+	}
+
 	vec3 lightDir = normalize(light.position - crntPos);
 
 	vec3 ambientVec = light.ambientIntensity * material.ambient * light.color;

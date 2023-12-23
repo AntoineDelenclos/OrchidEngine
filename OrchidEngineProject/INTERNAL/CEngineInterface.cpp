@@ -1,7 +1,7 @@
 #include "CEngineInterface.h"
 
 CEngineInterface::CEngineInterface(CEngine &engine) {
-    bEGIFullscreen = true;
+    bEGIFullscreen = false;
     bEGIWireframeChecked = false;
     bEGIFPSPlotChecked = false;
     iEGIFpsLimiter = 85;
@@ -32,6 +32,7 @@ CEngineInterface::CEngineInterface(CEngine &engine) {
     //New entity light
     pgfEGINewLightColor[0] = 1.f; pgfEGINewLightColor[1] = 1.f; pgfEGINewLightColor[2] = 1.f;
     gfEGINewLightAmbientIntensity = 0.5f;
+
 
     //Entity modifications via interface
     fEGINewX = 0.f; fEGINewY = 0.f; fEGINewZ = 0.f;
@@ -186,15 +187,43 @@ void CEngineInterface::EGINewEntityModule(CEngine& engine) {
     }
     ImGui::SliderFloat("Scale ratio", &gfEGINewEntityScaleRatio, 0.0f, 100.0f);
     //Entity's material values
-    ImGui::SliderFloat3("Entity's ambient", (float*)&vec3EGINewEntityAmbient, 0.0f, 1.0f);
-    ImGui::SliderFloat3("Entity's diffuse", (float*)&vec3EGINewEntityDiffuse, 0.0f, 1.0f);
-    ImGui::SliderFloat3("Entity's specular", (float*)&vec3EGINewEntitySpecular, 0.0f, 1.0f);
-    ImGui::SliderFloat("Entity's shininess", &fEGINewEntityShininess, 0.0f, 1.0f);
-    ImGui::SliderFloat("Entity's transparency", &fEGINewEntityTransparency, 0.0f, 1.0f);
-    //If the user want to create a new light
-    if (entityTypeCombo == 1) {
-        ImGui::ColorEdit3("Color's light", pgfEGINewLightColor);
+    if (entityTypeCombo == 0) {
+        ImGui::SliderFloat3("Cube's ambient", (float*)&vec3EGINewEntityAmbient, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Cube's diffuse", (float*)&vec3EGINewEntityDiffuse, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Cube's specular", (float*)&vec3EGINewEntitySpecular, 0.0f, 1.0f);
+        ImGui::SliderFloat("Cube's shininess", &fEGINewEntityShininess, 0.0f, 1.0f);
+        ImGui::SliderFloat("Cube's transparency", &fEGINewEntityTransparency, 0.0f, 1.0f);
+    }
+    //If the user wants to create a new directional light
+    if (entityTypeCombo == 1) { 
+        ImGui::ColorEdit3("Light's color", pgfEGINewLightColor);
+        ImGui::SliderFloat("Direction X", &gfEGINewLightDirectionX, -10.f, 10.f);
+        ImGui::SliderFloat("Direction Y", &gfEGINewLightDirectionY, -10.f, 10.f);
+        ImGui::SliderFloat("Direction Z", &gfEGINewLightDirectionZ, -10.f, 10.f);
         ImGui::SliderFloat("Ambient Intensity", &gfEGINewLightAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &gfEGINewLightDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &gfEGINewLightSpecularStrength, 0.f, 256.f);
+    }
+    //If the user wants to create a new point light
+    if (entityTypeCombo == 2) {
+        ImGui::ColorEdit3("Light's color", pgfEGINewLightColor);
+        ImGui::SliderFloat("KC", &fEGINewLightKC, 0.f, 1.f);
+        ImGui::SliderFloat("KL", &fEGINewLightKL, 0.f, 1.f);
+        ImGui::SliderFloat("KQ", &fEGINewLightKQ, 0.f, 1.f);
+        ImGui::SliderFloat("Ambient Intensity", &gfEGINewLightAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &gfEGINewLightDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &gfEGINewLightSpecularStrength, 0.f, 256.f);
+    }
+    if (entityTypeCombo == 3) {
+        ImGui::ColorEdit3("Light's color", pgfEGINewLightColor);
+        ImGui::SliderFloat("Direction X", &gfEGINewLightDirectionX, -10.f, 10.f);
+        ImGui::SliderFloat("Direction Y", &gfEGINewLightDirectionY, -10.f, 10.f);
+        ImGui::SliderFloat("Direction Z", &gfEGINewLightDirectionZ, -10.f, 10.f);
+        ImGui::SliderFloat("Inner CutOff", &fEGINewLightInnerCutOff, 0.f, 1.f);
+        ImGui::SliderFloat("Outer CutOff", &fEGINewLightOuterCutOff, 0.f, 1.f);
+        ImGui::SliderFloat("Ambient Intensity", &gfEGINewLightAmbientIntensity, 0.f, 1.f);
+        ImGui::SliderFloat("Diffuse Strength", &gfEGINewLightDiffuseStrength, 0.f, 1.f);
+        ImGui::SliderFloat("Specular Strength", &gfEGINewLightSpecularStrength, 0.f, 256.f);
     }
     if (ImGui::SmallButton("Create entity")) {
         //Create a new entity with the set parameters and reset values to default ones
@@ -232,7 +261,18 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
             for (int nb_ent = 0; nb_ent < draw_lines_cube; nb_ent++) {
                 char label[128];
                 sprintf_s(label, engine.pcubENGCubeEntitiesList[nb_ent].strENTName.c_str(), nb_ent);
-                if (ImGui::Selectable(label, siEGISelectedEntity_cube == nb_ent)) {
+                ImU32 text_color; glm::vec4 rgbc;
+                if (engine.pcubENGCubeEntitiesList[nb_ent].bENTActive) {
+                    rgbc = vec4HexToRGBAColor(ACTIVE_COLOR);
+                }
+                else {
+                    rgbc = vec4HexToRGBAColor(UNACTIVE_COLOR);
+                }
+                text_color = IM_COL32(rgbc.x, rgbc.y, rgbc.z, rgbc.w);
+                ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+                bool selected = ImGui::Selectable(label, siEGISelectedEntity_cube == nb_ent);
+                ImGui::PopStyleColor();
+                if (selected) {
                     siEGISelectedEntity_cube = nb_ent;
                     siEGISelectedType = 0;
                     fEGINewX = engine.pcubENGCubeEntitiesList[siEGISelectedEntity_cube].vec3ENTWorldPosition.x;
@@ -255,7 +295,18 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
             for (int nb_ent = 0; nb_ent < draw_lines_directional; nb_ent++) {
                 char label[128];
                 sprintf_s(label, engine.pligENGDirectionalLightsList[nb_ent].strENTName.c_str(), nb_ent);
-                if (ImGui::Selectable(label, siEGISelectedEntity_dir_light == nb_ent)) {
+                ImU32 text_color; glm::vec4 rgbc;
+                if (engine.pligENGDirectionalLightsList[nb_ent].bENTActive) {
+                    rgbc = vec4HexToRGBAColor(ACTIVE_COLOR);
+                }
+                else {
+                    rgbc = vec4HexToRGBAColor(UNACTIVE_COLOR);
+                }
+                text_color = IM_COL32(rgbc.x, rgbc.y, rgbc.z, rgbc.w);
+                ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+                bool selected = ImGui::Selectable(label, siEGISelectedEntity_dir_light == nb_ent);
+                ImGui::PopStyleColor();
+                if (selected) {
                     siEGISelectedEntity_dir_light = nb_ent;
                     siEGISelectedType = 1;
                     fEGINewX = engine.pligENGDirectionalLightsList[siEGISelectedEntity_dir_light].vec3ENTWorldPosition.x;
@@ -283,7 +334,18 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
                 // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
                 char label[128];
                 sprintf_s(label, engine.pligENGPointLightsList[nb_ent].strENTName.c_str(), nb_ent);
-                if (ImGui::Selectable(label, siEGISelectedEntity_point_light == nb_ent)) {
+                ImU32 text_color; glm::vec4 rgbc;
+                if (engine.pligENGPointLightsList[nb_ent].bENTActive) {
+                    rgbc = vec4HexToRGBAColor(ACTIVE_COLOR);
+                }
+                else {
+                    rgbc = vec4HexToRGBAColor(UNACTIVE_COLOR);
+                }
+                text_color = IM_COL32(rgbc.x, rgbc.y, rgbc.z, rgbc.w);
+                ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+                bool selected = ImGui::Selectable(label, siEGISelectedEntity_point_light == nb_ent);
+                ImGui::PopStyleColor();
+                if (selected) {
                     siEGISelectedEntity_point_light = nb_ent;
                     siEGISelectedType = 2;
                     fEGINewX = engine.pligENGPointLightsList[siEGISelectedEntity_point_light].vec3ENTWorldPosition.x;
@@ -311,7 +373,18 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
                 // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
                 char label[128];
                 sprintf_s(label, engine.pligENGSpotLightsList[nb_ent].strENTName.c_str(), nb_ent);
-                if (ImGui::Selectable(label, siEGISelectedEntity_spot_light == nb_ent)) {
+                ImU32 text_color; glm::vec4 rgbc;
+                if (engine.pligENGSpotLightsList[nb_ent].bENTActive) {
+                    rgbc = vec4HexToRGBAColor(ACTIVE_COLOR);
+                }
+                else {
+                    rgbc = vec4HexToRGBAColor(UNACTIVE_COLOR);
+                }
+                text_color = IM_COL32(rgbc.x, rgbc.y, rgbc.z, rgbc.w);
+                ImGui::PushStyleColor(ImGuiCol_Text, text_color);
+                bool selected = ImGui::Selectable(label, siEGISelectedEntity_spot_light == nb_ent);
+                ImGui::PopStyleColor();
+                if (selected) {
                     siEGISelectedEntity_spot_light = nb_ent;
                     siEGISelectedType = 3;
                     fEGINewX = engine.pligENGSpotLightsList[siEGISelectedEntity_spot_light].vec3ENTWorldPosition.x;
@@ -336,6 +409,7 @@ void CEngineInterface::EGISelectedEntityModule(CEngine& engine) {
     if (siEGISelectedEntity_cube >= 0 && siEGISelectedType == 0) {
         strEGISelectedName = engine.pcubENGCubeEntitiesList[siEGISelectedEntity_cube].strENTName;
         ImGui::Text(strEGISelectedName.c_str());
+        ImGui::SameLine(); ImGui::Checkbox("Active", &engine.pcubENGCubeEntitiesList[siEGISelectedEntity_cube].bENTActive);
         float Xc, Yc, Zc;
         int pos_cub = siEGISelectedEntity_cube;
         Xc = engine.pcubENGCubeEntitiesList[pos_cub].vec3ENTWorldPosition.x;
@@ -374,6 +448,7 @@ void CEngineInterface::EGISelectedEntityModule(CEngine& engine) {
     if (siEGISelectedEntity_dir_light >= 0 && siEGISelectedType == 1) {
         strEGISelectedName = engine.pligENGDirectionalLightsList[siEGISelectedEntity_dir_light].strENTName;
         ImGui::Text(strEGISelectedName.c_str());
+        ImGui::SameLine(); ImGui::Checkbox("Active", &engine.pligENGDirectionalLightsList[siEGISelectedEntity_dir_light].bENTActive);
         unsigned int pos_lig = siEGISelectedEntity_dir_light;
         float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
         Xl = engine.pligENGDirectionalLightsList[pos_lig].vec3ENTWorldPosition.x;
@@ -415,6 +490,7 @@ void CEngineInterface::EGISelectedEntityModule(CEngine& engine) {
     if (siEGISelectedEntity_point_light >= 0 && siEGISelectedType == 2) {
         strEGISelectedName = engine.pligENGPointLightsList[siEGISelectedEntity_point_light].strENTName;
         ImGui::Text(strEGISelectedName.c_str());
+        ImGui::SameLine(); ImGui::Checkbox("Active", &engine.pligENGPointLightsList[siEGISelectedEntity_point_light].bENTActive);
         unsigned int pos_lig = siEGISelectedEntity_point_light;
         float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
         Xl = engine.pligENGPointLightsList[pos_lig].vec3ENTWorldPosition.x;
@@ -455,6 +531,7 @@ void CEngineInterface::EGISelectedEntityModule(CEngine& engine) {
     if (siEGISelectedEntity_spot_light >= 0 && siEGISelectedType == 3) {
         strEGISelectedName = engine.pligENGSpotLightsList[siEGISelectedEntity_spot_light].strENTName;
         ImGui::Text(strEGISelectedName.c_str());
+        ImGui::SameLine(); ImGui::Checkbox("Active", &engine.pligENGSpotLightsList[siEGISelectedEntity_spot_light].bENTActive);
         unsigned int pos_lig = siEGISelectedEntity_spot_light;
         float Xl, Yl, Zl; //Update the cube light position (only when it's needed)
         Xl = engine.pligENGSpotLightsList[pos_lig].vec3ENTWorldPosition.x;

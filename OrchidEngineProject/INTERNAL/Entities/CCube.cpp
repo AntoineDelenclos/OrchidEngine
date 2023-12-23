@@ -16,6 +16,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	enumENTType = cube;
 	uiENTId = id_global;
 	uiCUBId = id_cube;
+	bENTActive = true;
 	strENTName = "Cube " + std::to_string(id_cube);
 	GLfloat* temp_vertices = nullptr;
 	temp_vertices = new (GLfloat[288]);
@@ -42,6 +43,7 @@ CCube::CCube(unsigned int id_global, unsigned int id_cube, glm::vec3 position, c
 	enumENTType = cube;
 	uiENTId = id_global;
 	uiCUBId = id_cube;
+	bENTActive = true;
 	GLfloat* temp_vertices = nullptr;
 	strENTName = "Cube " + std::to_string(id_cube);
 	temp_vertices = new (GLfloat[288]);

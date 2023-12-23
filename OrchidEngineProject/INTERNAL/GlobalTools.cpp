@@ -66,7 +66,8 @@ char* ConvertIntToString(int entier) {
     return str;
 }
 
-void ConvertToMinuscules(char* str) {
+//Fonctionne pas
+char* ConvertToLowerCase(char* str) {
     if (str == NULL) {
         CException exception(CHAINE_CARACTERES_NULLE);
         throw(exception);
@@ -78,6 +79,23 @@ void ConvertToMinuscules(char* str) {
         }
         boucle++;
     }
+    return str;
+}
+
+//Fonctionne pas
+char* ConvertToUpperCase(char* str) {
+    if (str == NULL) {
+        CException exception(CHAINE_CARACTERES_NULLE);
+        throw(exception);
+    }
+    int boucle = 0;
+    while (str[boucle]) {
+        if (str[boucle] >= 'a' && str[boucle] <= 'z') {
+            str[boucle] += 'A' - 'a';
+        }
+        boucle++;
+    }
+    return str;
 }
 
 bool bFileIsEmpty(std::string PathFile) {
@@ -170,6 +188,40 @@ glm::vec3 vec3TriangleNormalVector(glm::mat3 matrice) {
     glm::vec3 normalVector = NormalizeVector(preNormalVector);
     //displayVec3(normalVector);
     return normalVector;
+}
+
+//Converti un code couleur HEX en RGBA
+glm::vec4 vec4HexToRGBAColor(std::string hex_code) {
+    size_t taille = hex_code.size();
+    if (taille != 7 && taille != 9) {
+        CException exception = CException(HEX_FORMAT_INCORRECT);
+        throw(exception);
+    }
+    std::vector<char> HEX = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+    std::transform(hex_code.begin(), hex_code.end(), hex_code.begin(), std::toupper); //Pour mettre en majuscules
+    glm::vec4 color = glm::vec4(0,0,0,0);
+    for (int i = 1; i < taille; i++) {
+        std::vector<char>::iterator itr = std::find(HEX.begin(), HEX.end(), hex_code[i]);
+        if (itr == HEX.end()) {
+            CException exception = CException(HEX_FORMAT_INCORRECT);
+            throw(exception);
+        }
+        int index = (int)(itr - HEX.begin());
+        if (i == 1) { color.x += index * 16; }
+        if (i == 2) { color.x += index; }
+        if (i == 3) { color.y += index * 16; }
+        if (i == 4) { color.y += index; }
+        if (i == 5) { color.z += index * 16; }
+        if (i == 6) { color.z += index; }
+        if (taille == 7) {
+            color.w = 255;
+        }
+        else if (taille == 9) {
+            if (i == 7) { color.w += index * 16; }
+            if (i == 8) { color.w += index; }
+        }
+    }
+    return color;
 }
 
 //////////////////////////// OLD MAIN FUNCTIONS /////////////////////////////////

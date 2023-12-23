@@ -111,20 +111,28 @@ void CRender::RDRLightVerticesAndTextureRendering(CEngine& engine, CLight& light
 
 void CRender::RDRRenderingCubes(CEngine &engine) {
 	for (int boucle_cube = 0; boucle_cube < engine.iENGGetNumberOfEntitiesTypeX(cube); boucle_cube++) {
-		RDRLightRenderingOnCube(engine, engine.pcubENGCubeEntitiesList[boucle_cube]);
-		RDRCubeVerticesAndTextureRendering(engine, engine.pcubENGCubeEntitiesList[boucle_cube], boucle_cube);
+		if (engine.pcubENGCubeEntitiesList[boucle_cube].bENTActive) { //If the cube isn't activated, now needs to calculate light & to render it
+			RDRLightRenderingOnCube(engine, engine.pcubENGCubeEntitiesList[boucle_cube]);
+			RDRCubeVerticesAndTextureRendering(engine, engine.pcubENGCubeEntitiesList[boucle_cube], boucle_cube);
+		}
 	}
 }
 
 void CRender::RDRRenderingLightCubes(CEngine& engine) {
 	for (int boucle_dir_light = 0; boucle_dir_light < engine.iENGGetNumberOfEntitiesTypeX(dir_light); boucle_dir_light++) {
-		RDRLightVerticesAndTextureRendering(engine, engine.pligENGDirectionalLightsList[boucle_dir_light], boucle_dir_light);
+		if (engine.pligENGDirectionalLightsList[boucle_dir_light].bENTActive) {
+			RDRLightVerticesAndTextureRendering(engine, engine.pligENGDirectionalLightsList[boucle_dir_light], boucle_dir_light);
+		}
 	}
 	for (int boucle_point_light = 0; boucle_point_light < engine.iENGGetNumberOfEntitiesTypeX(point_light); boucle_point_light++) {
-		RDRLightVerticesAndTextureRendering(engine, engine.pligENGPointLightsList[boucle_point_light], boucle_point_light);
+		if (engine.pligENGPointLightsList[boucle_point_light].bENTActive) {
+			RDRLightVerticesAndTextureRendering(engine, engine.pligENGPointLightsList[boucle_point_light], boucle_point_light);
+		}
 	}
 	for (int boucle_spot_light = 0; boucle_spot_light < engine.iENGGetNumberOfEntitiesTypeX(spot_light); boucle_spot_light++) {
-		RDRLightVerticesAndTextureRendering(engine, engine.pligENGSpotLightsList[boucle_spot_light], boucle_spot_light);
+		if (engine.pligENGSpotLightsList[boucle_spot_light].bENTActive) {
+			RDRLightVerticesAndTextureRendering(engine, engine.pligENGSpotLightsList[boucle_spot_light], boucle_spot_light);
+		}
 	}
 }
 

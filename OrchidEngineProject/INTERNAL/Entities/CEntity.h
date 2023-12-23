@@ -26,6 +26,7 @@ public:
     std::string strENTName;
 	//On va translate de cette position après l'avoir dessiné en (0,0,0) pour éviter des soucis avec les transformations matricielles
 	glm::vec3 vec3ENTWorldPosition;
+    bool bENTActive; //If an entity is inactive : no render, no consequences to the surroundings.
 
 	const char* pcENTVertexShaderName; //Nom du fichier, par exemple : "core.vs"
 	const char* pcENTFragmentShaderName;

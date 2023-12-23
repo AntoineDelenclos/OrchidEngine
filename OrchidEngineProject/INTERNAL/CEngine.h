@@ -84,9 +84,9 @@ public:
 	CLight* pligENGLightEntitiesList;
 
 	//Lights
-	int iENGNumberDirectionalLights;
-	int iENGNumberPointLights;
-	int iENGNumberSpotLights;
+	int iENGNumberDirectionalLights; int iENGNumberActiveDirectionalLights;
+	int iENGNumberPointLights; /*Nombre de PointLight*/ int iENGNumberActivePointLights;//Nombre de PointLight prisent en compte dans le rendu
+	int iENGNumberSpotLights; int iENGNumberActiveSpotLights;
 	int* piENGDirectionalLightsID;
 	int* piENGPointLightsID;
 	int* piENGSpotLightsID;

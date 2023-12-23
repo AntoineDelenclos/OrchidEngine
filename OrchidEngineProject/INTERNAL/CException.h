@@ -24,8 +24,11 @@
 #define ENGINE_NOT_RUNNING 18
 #define ENGINE_TEXTURE_LIMIT 19
 
+//INTERFACE
+#define HEX_FORMAT_INCORRECT 20
+
 //INPUTS
-#define MAP_KEYBINDS_EMPTY 20
+#define MAP_KEYBINDS_EMPTY 21
 
 class CException {
 private:

@@ -75,9 +75,9 @@ CEngine::CEngine() {
 	puiENGVBOSpotLightsEngine = new (GLuint[iENGMaxNumberVBO]);
 
 	//Lights
-	iENGNumberDirectionalLights = 0;
-	iENGNumberPointLights =0;
-	iENGNumberSpotLights = 0;
+	iENGNumberDirectionalLights = 0; iENGNumberActiveDirectionalLights = 0;
+	iENGNumberPointLights = 0; iENGNumberActivePointLights = 0;
+	iENGNumberSpotLights = 0; iENGNumberActiveSpotLights = 0;
 	piENGDirectionalLightsID = new(int[uiENGMaxNumberEntities]);
 	piENGPointLightsID = new(int[uiENGMaxNumberEntities]);
 	piENGSpotLightsID = new(int[uiENGMaxNumberEntities]);
@@ -270,7 +270,7 @@ void CEngine::ENGFpsCounterAndLimiter() {
 		uiENGFpsTempCounter = 0;
 	}
 
-	//Décaler de 1 vers la gauche
+	//Décaler de 1 vers la gauche (utile pour le graphe d'affichage des FPS sur les dernières secondes)
 	for (int boucle = 0; boucle < 999; boucle++) {
 		pgfENGFpsCounterBuffer[boucle] = pgfENGFpsCounterBuffer[boucle + 1];
 		//pgfENGFrameDelayMSBuffer[boucle] = pgfENGFrameDelayMSBuffer[boucle + 1];
@@ -315,57 +315,78 @@ void CEngine::ENGLightUpdate() {
 	for (int boucle_dir = 0; boucle_dir < iENGNumberDirectionalLights; boucle_dir++) {
 		std::string str = "directionalLights["; str += std::to_string(boucle_dir); str += "]";
 		std::string locColor = str + ".color";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[0], pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[1], pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[2]);
 		std::string logDirection = str + ".direction";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, logDirection.c_str()), pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.x, pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.y, pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.z);
 		std::string locAmbient = str + ".ambientIntensity";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity, pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity, pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity);
 		std::string locDiffuse = str + ".diffuseStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength);
 		std::string locSpecular = str + ".specularStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength);
+		std::string locActive = str + ".on";
+		if (pligENGDirectionalLightsList[boucle_dir].bENTActive) {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 1);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[0], pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[1], pligENGDirectionalLightsList[boucle_dir].gfLIGColorLight[2]);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, logDirection.c_str()), pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.x, pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.y, pligENGDirectionalLightsList[boucle_dir].vec3LIGDirection.z);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity, pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity, pligENGDirectionalLightsList[boucle_dir].gfLIGAmbientIntensity);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGDiffuseStrength);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength, pligENGDirectionalLightsList[boucle_dir].gfLIGSpecularStrength);
+		}
+		else {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 0);
+		}
 	}
 	//Points lights
 	glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, "number_point_light"), iENGNumberPointLights);
 	for (int boucle_point = 0; boucle_point < iENGNumberPointLights; boucle_point++) {
 		std::string str = "pointLights["; str += std::to_string(boucle_point); str += "]";
 		std::string locColor = str + ".color";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGPointLightsList[boucle_point].gfLIGColorLight[0], pligENGPointLightsList[boucle_point].gfLIGColorLight[1], pligENGPointLightsList[boucle_point].gfLIGColorLight[2]);
 		std::string locPosition = str + ".position";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locPosition.c_str()), pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.x, pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.y, pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.z);
 		std::string locConstant = str + ".constant";
-		glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locConstant.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKC);
 		std::string locLinear = str + ".linear";
-		glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locLinear.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKL);
 		std::string locQuadratic = str + ".quadratic";
-		glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locQuadratic.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKQ);
 		std::string locAmbient = str + ".ambientIntensity";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity, pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity, pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity);
 		std::string locDiffuse = str + ".diffuseStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength, pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength, pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength);
 		std::string locSpecular = str + ".specularStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGPointLightsList[boucle_point].gfLIGSpecularStrength, pligENGPointLightsList[boucle_point].gfLIGSpecularStrength, pligENGPointLightsList[boucle_point].gfLIGSpecularStrength);
+		std::string locActive = str + ".on";
+		if (pligENGPointLightsList[boucle_point].bENTActive) {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 1);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGPointLightsList[boucle_point].gfLIGColorLight[0], pligENGPointLightsList[boucle_point].gfLIGColorLight[1], pligENGPointLightsList[boucle_point].gfLIGColorLight[2]);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locPosition.c_str()), pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.x, pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.y, pligENGPointLightsList[boucle_point].vec3ENTWorldPosition.z);
+			glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locConstant.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKC);
+			glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locLinear.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKL);
+			glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, locQuadratic.c_str()), pligENGPointLightsList[boucle_point].fLIGPointKQ);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity, pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity, pligENGPointLightsList[boucle_point].gfLIGAmbientIntensity);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength, pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength, pligENGPointLightsList[boucle_point].gfLIGDiffuseStrength);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGPointLightsList[boucle_point].gfLIGSpecularStrength, pligENGPointLightsList[boucle_point].gfLIGSpecularStrength, pligENGPointLightsList[boucle_point].gfLIGSpecularStrength);
+		}
+		else {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 0); //Juste ca va return vec3(0.0,0.0,0.0) dans les calculs de lumière
+		}
 	}
 	//Spotlights
 	glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, "number_spot_light"), iENGNumberSpotLights);
 	for (int boucle_spot = 0; boucle_spot < iENGNumberSpotLights; boucle_spot++) {
 		std::string str = "spotLights["; str += std::to_string(boucle_spot); str += "]";
 		std::string locColor = str + ".color";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGColorLight[0], pligENGSpotLightsList[boucle_spot].gfLIGColorLight[1], pligENGSpotLightsList[boucle_spot].gfLIGColorLight[2]);
 		std::string locPosition = str + ".position";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locPosition.c_str()), pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.x, pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.y, pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.z);
 		std::string logDirection = str + ".direction";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, logDirection.c_str()), pligENGSpotLightsList[boucle_spot].vec3LIGDirection.x, pligENGSpotLightsList[boucle_spot].vec3LIGDirection.y, pligENGSpotLightsList[boucle_spot].vec3LIGDirection.z);
 		std::string logInner = str + ".innerCutOff";
-		glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, logInner.c_str()), pligENGSpotLightsList[boucle_spot].fLIGInnerCutOff);
 		std::string logOuter = str + ".outerCutOff";
-		glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, logOuter.c_str()), pligENGSpotLightsList[boucle_spot].fLIGOuterCutOff);
 		std::string locAmbient = str + ".ambientIntensity";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity, pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity, pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity);
 		std::string locDiffuse = str + ".diffuseStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength, pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength, pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength);
 		std::string locSpecular = str + ".specularStrength";
-		glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength, pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength, pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength);
+		std::string locActive = str + ".on";
+		if (pligENGSpotLightsList[boucle_spot].bENTActive) {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 1);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locColor.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGColorLight[0], pligENGSpotLightsList[boucle_spot].gfLIGColorLight[1], pligENGSpotLightsList[boucle_spot].gfLIGColorLight[2]);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locPosition.c_str()), pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.x, pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.y, pligENGSpotLightsList[boucle_spot].vec3ENTWorldPosition.z);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, logDirection.c_str()), pligENGSpotLightsList[boucle_spot].vec3LIGDirection.x, pligENGSpotLightsList[boucle_spot].vec3LIGDirection.y, pligENGSpotLightsList[boucle_spot].vec3LIGDirection.z);
+			glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, logInner.c_str()), pligENGSpotLightsList[boucle_spot].fLIGInnerCutOff);
+			glUniform1f(glGetUniformLocation(shaENGCoreShader.Program, logOuter.c_str()), pligENGSpotLightsList[boucle_spot].fLIGOuterCutOff);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locAmbient.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity, pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity, pligENGSpotLightsList[boucle_spot].gfLIGAmbientIntensity);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locDiffuse.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength, pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength, pligENGSpotLightsList[boucle_spot].gfLIGDiffuseStrength);
+			glUniform3f(glGetUniformLocation(shaENGCoreShader.Program, locSpecular.c_str()), pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength, pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength, pligENGSpotLightsList[boucle_spot].gfLIGSpecularStrength);
+		}
+		else {
+			glUniform1i(glGetUniformLocation(shaENGCoreShader.Program, locActive.c_str()), 0);
+		}
 	}
 }
 
@@ -400,14 +421,14 @@ void CEngine::ENGAddCubeEntity(CCube cube) {
 }
 
 void CEngine::ENGAddLightEntity(CLight light) {
-	pligENGLightEntitiesList[puiENGNextFreeEntitiesIDs[2]] = light;
+	//pligENGLightEntitiesList[puiENGNextFreeEntitiesIDs[2]] = light;
 	switch (light.enumLIGType) {
 	case (directional):
 		pligENGDirectionalLightsList[iENGGetNumberOfEntitiesTypeX(dir_light)] = light;
 		//piENGDirectionalLightsID[iENGNumberDirectionalLights] = light.uiLIGId;
 		ENGIncreaseNumberOfEntities(2, 1);
 		ENGIncrementNextFreeEntityID(2, 1);
-		iENGNumberDirectionalLights += 1;
+		iENGNumberDirectionalLights += 1; iENGNumberActiveDirectionalLights += 1;
 		mapStrIntENGNumberOfEachEntities["dir_light"] += 1;
 		break;
 	case (point):
@@ -415,7 +436,7 @@ void CEngine::ENGAddLightEntity(CLight light) {
 		//piENGPointLightsID[iENGNumberPointLights] = light.uiLIGId;
 		ENGIncreaseNumberOfEntities(3, 1);
 		ENGIncrementNextFreeEntityID(3, 1);
-		iENGNumberPointLights += 1;
+		iENGNumberPointLights += 1; iENGNumberActivePointLights += 1;
 		mapStrIntENGNumberOfEachEntities["point_light"] += 1;
 		break;
 	case (spot):
@@ -423,7 +444,7 @@ void CEngine::ENGAddLightEntity(CLight light) {
 		//piENGSpotLightsID[iENGNumberSpotLights] = light.uiLIGId;
 		ENGIncreaseNumberOfEntities(4, 1);
 		ENGIncrementNextFreeEntityID(4, 1);
-		iENGNumberSpotLights += 1;
+		iENGNumberSpotLights += 1; iENGNumberActiveSpotLights += 1;
 		mapStrIntENGNumberOfEachEntities["spot_light"] += 1;
 		break;
 	}

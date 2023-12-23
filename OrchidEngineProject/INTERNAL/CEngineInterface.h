@@ -2,7 +2,8 @@
 #include "CRender.h"
 #include "CCamera.h"
 #define SIZE_TEXTURE_INTERFACE 100 //Taille de chaque texture dans les modules
-
+#define ACTIVE_COLOR "#00FF00" //Couleur dans l'interface qui va montrer si une entité est activée ou non
+#define UNACTIVE_COLOR "#FF0000"
 //class CTexture;
 
 class CEngineInterface {
@@ -48,8 +49,10 @@ public:
 	CRender rdrEGIRender;
 	//New light variables
 	GLfloat pgfEGINewLightColor[3];
-	GLfloat gfEGINewLightAmbientIntensity;
-	GLfloat gfEGINewLight;
+	GLfloat gfEGINewLightDirectionX; GLfloat gfEGINewLightDirectionY; GLfloat gfEGINewLightDirectionZ;
+	GLfloat gfEGINewLightAmbientIntensity; GLfloat gfEGINewLightDiffuseStrength; GLfloat gfEGINewLightSpecularStrength;
+	float fEGINewLightKC; float fEGINewLightKL; float fEGINewLightKQ;
+	float fEGINewLightInnerCutOff; float fEGINewLightOuterCutOff;
 
 	//Entity modifications via interface
 	float fEGINewX, fEGINewY, fEGINewZ;
