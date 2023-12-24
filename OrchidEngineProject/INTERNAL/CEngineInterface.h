@@ -45,6 +45,7 @@ public:
 	int siEGISelectedType; //Default -1 ; 0 pour cube, 1 pour directional, etc. Permet de faire en sorte qu'après sélection
 	//de différentes entités de types différents, seule la dernière entité sélectionnée ait ses attributs de modifiable
 	std::string strEGISelectedName;
+	char testNameInput;
 
 	CRender rdrEGIRender;
 	//New light variables

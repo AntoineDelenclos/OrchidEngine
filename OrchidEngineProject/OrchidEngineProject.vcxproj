@@ -144,6 +144,7 @@
     <ClCompile Include="EXTERNAL\IMGUI\imgui_draw.cpp" />
     <ClCompile Include="EXTERNAL\IMGUI\imgui_impl_glfw.cpp" />
     <ClCompile Include="EXTERNAL\IMGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_stdlib.cpp" />
     <ClCompile Include="EXTERNAL\IMGUI\imgui_tables.cpp" />
     <ClCompile Include="EXTERNAL\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="EXTERNAL\IMPLOT\implot.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="EXTERNAL\IMGUI\imgui_impl_opengl3.h" />
     <ClInclude Include="EXTERNAL\IMGUI\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="EXTERNAL\IMGUI\imgui_internal.h" />
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_stdlib.h" />
     <ClInclude Include="EXTERNAL\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="EXTERNAL\IMGUI\imstb_textedit.h" />
     <ClInclude Include="EXTERNAL\IMGUI\imstb_truetype.h" />

@@ -7,6 +7,7 @@ CInputs::CInputs() {
     dINPSensitivity = 0.05f;
     bINPFirstMouse = true;
     camINPChosenCamera = CCamera();
+    bINPBackspaceInputTextInterface = false; //Au début on ne supprime rien dans un champ texte
 }
 
 CInputs::CInputs(CCamera& camera) {
@@ -86,6 +87,12 @@ void CInputs::INPKeyCallback(GLFWwindow* window_, int key, int scancode, int act
     }
     if (key == GLFW_KEY_V && action == GLFW_PRESS && iINPCameraState == 2) {
         iINPCameraState = 0;
+    }
+    if (key == GLFW_KEY_BACKSPACE && (action == GLFW_REPEAT || action == GLFW_PRESS)) {
+        bINPBackspaceInputTextInterface = true;
+    }
+    if (key == GLFW_KEY_BACKSPACE && action == GLFW_RELEASE) {
+        bINPBackspaceInputTextInterface = false;
     }
     //Engine
     if (key == mapStrIntINPKeybinds["QUIT"] && action == GLFW_PRESS) {

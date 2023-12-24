@@ -148,7 +148,7 @@ int main() {
     
 
     while (!glfwWindowShouldClose(engine.pwindowENGWindow)) { //Loop until the user closes the window
-
+        glViewport(0, 0, engine.iENGScreenWidth, engine.iENGScreenHeight); //Redimensionne relativement à la taille d'écran
         render.RDRPostProcess(engine);
 
         engine.ENGLightUpdate();
@@ -214,6 +214,18 @@ int main() {
 
         glfwSwapBuffers(engine.pwindowENGWindow); //Swap front and back buffers
         engine.ENGFrameUpdate(); //Contains glfwPollEvents()
+        /*if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_
+        
+        
+        
+        
+        
+        sEnable)
+        {
+            std::cout << "oui";
+            //ImGui::UpdatePlatformWindows();
+            //ImGui::RenderPlatformWindowsDefault();
+        }*/
 
         //Penser à bien mettre cette fonction dans CEngine car sinon le moteur ne va pas se limiter à un certain nombre de FPS
         if ( (1000.0 / engine.iENGGetFpsLimit()) > (1000*engine.dENGDiffTime) ){

@@ -117,6 +117,9 @@
     <ClCompile Include="INTERNAL\main.cpp">
       <Filter>Source Files\INTERNAL</Filter>
     </ClCompile>
+    <ClCompile Include="EXTERNAL\IMGUI\imgui_stdlib.cpp">
+      <Filter>Source Files\EXTERNAL\IMGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXTERNAL\IMGUI\imconfig.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="INTERNAL\GlobalTools.h">
       <Filter>Header Files\INTERNAL</Filter>
+    </ClInclude>
+    <ClInclude Include="EXTERNAL\IMGUI\imgui_stdlib.h">
+      <Filter>Header Files\EXTERNAL\IMGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

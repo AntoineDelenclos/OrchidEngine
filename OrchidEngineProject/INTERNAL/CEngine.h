@@ -10,6 +10,11 @@
 #include "../EXTERNAL/IMGUI/imgui.h"
 #include "../EXTERNAL/IMGUI/imgui_impl_glfw.h"
 #include "../EXTERNAL/IMGUI/imgui_impl_opengl3.h"
+#include "../EXTERNAL/IMGUI/imgui_stdlib.h"
+/*
+#include "../EXTERNAL/IMGUI/imstb_textedit.h"
+#include "../EXTERNAL/IMGUI/imstb_rectpack.h"
+#include "../EXTERNAL/IMGUI/imstb_truetype.h"*/ //Fonctionne pas car STB manque et n'est pas bien intégré dans le header
 
 //IMPLOT
 #include "../EXTERNAL/IMPLOT/implot.h"

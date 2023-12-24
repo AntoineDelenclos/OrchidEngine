@@ -49,10 +49,13 @@ public:
 	glm::mat4 mat4INPGetMovement();
 	std::string strINPGetKeyBindsPathFile();
 
+	//For inputs that needed to be executed in other classes (like in CEngineInterface)
+	bool bINPBackspaceInputTextInterface;
+
 	//For inputs that need to be smooth (like movements input)
 	void processInputs(GLFWwindow* window);
 
-	//New variables & methods
+	//Bindings
 	std::map<std::string, int> mapStrIntINPKeybinds;
 	void INPAddingKeybind(std::string function_name, int key);
 	void INPWriteMapBindingsOnTxtFile();
