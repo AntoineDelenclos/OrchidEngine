@@ -1,6 +1,9 @@
 #pragma once
 #include "CRender.h"
 #include "CCamera.h"
+//Use to convert wstring -> string
+#include <locale>
+#include <codecvt>
 #define SIZE_TEXTURE_INTERFACE 100 //Taille de chaque texture dans les modules
 #define ACTIVE_COLOR "#00FF00" //Couleur dans l'interface qui va montrer si une entité est activée ou non
 #define UNACTIVE_COLOR "#FF0000"
@@ -11,6 +14,7 @@ public:
 	bool bEGIFullscreen;
 	bool bEGIWireframeChecked;
 	bool bEGIFPSPlotChecked;
+	bool bEGIScriptEditorON;
 
 	int iEGIFpsLimiter;
 	int iEGIWidth;
@@ -68,6 +72,7 @@ public:
 	void EGIChangeDisplayState();
 
 	//IMGUI MODULES
+
 	void EGIEngineModule(CEngine& engine);
 	void EGIPostProcessingModule(CEngine& engine);
 	void EGIInputsModule(CEngine& engine);
@@ -76,11 +81,19 @@ public:
 	void EGINewEntityModule(CEngine& engine);
 	void EGISelectedEntityModule(CEngine& engine);
 	void EGICameraModule(CEngine& engine, CCamera& camera);
-	void EGIDocking(CEngine& engine);
+	void EGIScriptEditorModule(CEngine& engine);
+	void EGIDockingEngine(CEngine& engine);
+	void EGIDockingScriptEditor(CEngine& engine);
+
+	void EGIFramebufferModule(CEngine& engine, GLuint texture);
+	void EGIMenuBar(CEngine& engine);
+	std::string openfiledialog(char* filter, HWND owner);
 
 	void EGIWireframeUpdate();
 	void EGIFullscreenUpdate(CEngine &engine);
+	void EGIPreUpdate(CEngine& engine);
 	void EGIUpdate(CEngine &engine);
+	void EGIPostUpdate(CEngine& engine);
 
 	void EGIInterfaceToEngine(CEngine &engine);
 };

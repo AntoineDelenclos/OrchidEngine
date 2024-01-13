@@ -1,9 +1,11 @@
 #include "CEngineInterface.h"
 
+
 CEngineInterface::CEngineInterface(CEngine &engine) {
-    bEGIFullscreen = false;
+    bEGIFullscreen = true;
     bEGIWireframeChecked = false;
     bEGIFPSPlotChecked = false;
+    bEGIScriptEditorON = false;
     iEGIFpsLimiter = 85;
     iEGIWidth = engine.uiENGWidth;
     iEGIHeight = engine.uiENGHeight;
@@ -113,7 +115,7 @@ void CEngineInterface::EGIPostProcessingModule(CEngine& engine) {
     ImGui::SliderFloat("Saturation", &gfEGISaturation, -20.0f, 20.0f);
     ImGui::SliderFloat("Gamma", &gfEGIGamma, 0.0f, 4.0f);
     if (ImGui::SmallButton("Reset to default values")) {
-        gfEGIBrightness = 0.0f;
+        gfEGIBrightness = 1.0f;
         gfEGIContrast = 1.0f;
         gfEGISaturation = 1.0f;
         gfEGIGamma = 1.0f;
@@ -186,6 +188,11 @@ void CEngineInterface::EGINewEntityModule(CEngine& engine) {
             }
         }
     }
+    if (ImGui::SmallButton("Current view position")) {
+        pgfEGINewEntityXYZPos[0] = engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.x;
+        pgfEGINewEntityXYZPos[1] = engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.y;
+        pgfEGINewEntityXYZPos[2] = engine.inpENGInputs.camINPChosenCamera.vec3CAMCameraPosition.z;
+    }
     ImGui::SliderFloat("Scale ratio", &gfEGINewEntityScaleRatio, 0.0f, 100.0f);
     //Entity's material values
     if (entityTypeCombo == 0) {
@@ -244,6 +251,24 @@ void CEngineInterface::EGINewEntityModule(CEngine& engine) {
         if (entityTypeCombo == 1) {
             newEntityType = dir_light;
             unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
+            CLight newDirectionalLight = CLight(directional, newEntityTypeId, engine.uiENGGetNextFreeEntityID(dir_light), newEntityWorldPosition, glm::vec3(fEGINewDirectionX, fEGINewDirectionY, fEGINewDirectionZ), pgfEGINewLightColor, gfEGINewLightAmbientIntensity, gfEGINewLightDiffuseStrength, gfEGINewLightSpecularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", iEGITextureNumber);
+            newDirectionalLight.LIGFirstTimeSetVerticesPosition();
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, newDirectionalLight, newDirectionalLight.uiLIGId);
+            engine.ENGAddLightEntity(newDirectionalLight);
+        }
+        if (entityTypeCombo == 2) {
+            newEntityType = point_light;
+            unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
+            CLight newPointLight = CLight(point, newEntityTypeId, engine.uiENGGetNextFreeEntityID(point_light), newEntityWorldPosition, pgfEGINewLightColor, fEGINewKC, fEGINewKL, fEGINewKQ, gfEGINewLightAmbientIntensity, gfEGINewLightDiffuseStrength, gfEGINewLightSpecularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", iEGITextureNumber);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, newPointLight, newPointLight.uiLIGId);
+            engine.ENGAddLightEntity(newPointLight);
+        }
+        if (entityTypeCombo == 3) {
+            newEntityType = spot_light;
+            unsigned int newEntityTypeId = engine.uiENGGetNextFreeEntityID(newEntityType);
+            CLight newSpotLight = CLight(spot, newEntityTypeId, engine.uiENGGetNextFreeEntityID(spot_light), newEntityWorldPosition, glm::vec3(fEGINewDirectionX, fEGINewDirectionY, fEGINewDirectionZ), fEGINewLightInnerCutOff, fEGINewLightOuterCutOff, pgfEGINewLightColor, gfEGINewLightAmbientIntensity, gfEGINewLightDiffuseStrength, gfEGINewLightSpecularStrength, "INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag", iEGITextureNumber);
+            rdrEGIRender.RDRCreateMandatoryForLight(engine, newSpotLight, newSpotLight.uiLIGId);
+            engine.ENGAddLightEntity(newSpotLight);
         }
     }
     ImGui::End();
@@ -251,7 +276,7 @@ void CEngineInterface::EGINewEntityModule(CEngine& engine) {
 
 void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
     ImGui::Begin("Entities Lists");  
-    std::string strHeaderCube = "Cube entities ("; strHeaderCube += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(cube)); strHeaderCube += ')';
+    std::string strHeaderCube = "Cube entities ("; strHeaderCube += std::to_string(engine.iENGGetNumberOfEntitiesTypeX(cube)).c_str(); strHeaderCube += ')';
     if (ImGui::CollapsingHeader(strHeaderCube.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) { //Mettre en DefaultOpen permet de réouvrir si on ajoute une entité du type correspondant
         int draw_lines_cube = engine.iENGGetNumberOfEntitiesTypeX(cube);
         static int max_height_in_lines_cube = 5;
@@ -285,7 +310,7 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
         }
         ImGui::EndChild();
     }
-    std::string strHeaderDirLight = "Directional light entities ("; strHeaderDirLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(dir_light)); strHeaderDirLight += ')';
+    std::string strHeaderDirLight = "Directional light entities ("; strHeaderDirLight += std::to_string(engine.iENGGetNumberOfEntitiesTypeX(dir_light)).c_str(); strHeaderDirLight += ')';
     if (ImGui::CollapsingHeader(strHeaderDirLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
         int draw_lines_directional = engine.iENGGetNumberOfEntitiesTypeX(dir_light);
         static int max_height_in_lines_directional = 5;
@@ -323,7 +348,7 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
         ImGui::EndChild();
     }
     
-    std::string strHeaderPointLight = "Point light entities ("; strHeaderPointLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(point_light)); strHeaderPointLight += ')';
+    std::string strHeaderPointLight = "Point light entities ("; strHeaderPointLight += std::to_string(engine.iENGGetNumberOfEntitiesTypeX(point_light)).c_str(); strHeaderPointLight += ')';
     if (ImGui::CollapsingHeader(strHeaderPointLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
         int draw_lines_point = engine.iENGGetNumberOfEntitiesTypeX(point_light);
         static int max_height_in_lines_point = 5;
@@ -362,7 +387,7 @@ void CEngineInterface::EGIEntitiesListsModule(CEngine &engine) {
         ImGui::EndChild();
     }
 
-    std::string strHeaderSpotLight = "Spotlight entities ("; strHeaderSpotLight += ConvertIntToString(engine.iENGGetNumberOfEntitiesTypeX(spot_light)); strHeaderSpotLight += ')';
+    std::string strHeaderSpotLight = "Spotlight entities ("; strHeaderSpotLight += std::to_string(engine.iENGGetNumberOfEntitiesTypeX(spot_light)).c_str(); strHeaderSpotLight += ')';
     if (ImGui::CollapsingHeader(strHeaderSpotLight.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
         int draw_lines_spot = engine.iENGGetNumberOfEntitiesTypeX(spot_light);
         static int max_height_in_lines_spot = 5;
@@ -575,7 +600,11 @@ void CEngineInterface::EGICameraModule(CEngine& engine, CCamera& camera) {
 
 }
 
-void CEngineInterface::EGIDocking(CEngine& engine) { //https://github.com/ocornut/imgui/issues/7067 documentation Novembre 2023
+void CEngineInterface::EGIScriptEditorModule(CEngine& engine) {
+
+}
+
+void CEngineInterface::EGIDockingEngine(CEngine& engine) { //https://github.com/ocornut/imgui/issues/7067 documentation Novembre 2023
     //Dockspace
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -583,6 +612,19 @@ void CEngineInterface::EGIDocking(CEngine& engine) { //https://github.com/ocornu
     ImGui::SetNextWindowSize(viewport->WorkSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::Begin("Orchid Engine", NULL, window_flags);
+    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+    ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    ImGui::End();
+}
+
+void CEngineInterface::EGIDockingScriptEditor(CEngine& engine) {
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
+    ImGui::SetNextWindowViewport(viewport->ID);
+    ImGui::Begin("Script Editor", NULL, window_flags);
     ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
     ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
@@ -603,7 +645,9 @@ void CEngineInterface::EGIWireframeUpdate() {
 //Check if the render mode should be windowed or fullscreen
 void CEngineInterface::EGIFullscreenUpdate(CEngine &engine) {
     if (bEGIFullscreen == false) {
-        glfwSetWindowMonitor(engine.pwindowENGWindow, NULL, 60, 60, engine.uiENGWidth, engine.uiENGHeight, 0);
+        int monitorXPos; int monitorYPos; int monitorWidth; int monitorHeight;
+        glfwGetMonitorWorkarea(engine.pmonitorENGMonitor, &monitorXPos, &monitorYPos, &monitorWidth, &monitorHeight);
+        glfwSetWindowMonitor(engine.pwindowENGWindow, NULL, 50, 50, monitorWidth, monitorHeight, 0);
     }
     else if (bEGIFullscreen == true) {
         glfwSetWindowMonitor(engine.pwindowENGWindow, engine.pmonitorENGMonitor, 0, 0, engine.uiENGWidth, engine.uiENGHeight, 0);
@@ -620,15 +664,24 @@ void CEngineInterface::EGIInterfaceToEngine(CEngine &engine) {
     engine.ENGSetNormRec(bEGINormeRec_709);
 }
 
-void CEngineInterface::EGIUpdate(CEngine &engine) { //Update the display of the interface at each frame time
-    //Pre-Update
+//Do the pre-update process
+void CEngineInterface::EGIPreUpdate(CEngine& engine) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+}
 
+void CEngineInterface::EGIPostUpdate(CEngine& engine) {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+//Update the display of the interface at each frame time
+void CEngineInterface::EGIUpdate(CEngine &engine) {
     //Interface Modules rendering methods
-    EGIDocking(engine);
+    EGIDockingEngine(engine);
     EGIEngineModule(engine);
+    EGIScriptEditorModule(engine);
     EGIPostProcessingModule(engine);
     EGIInputsModule(engine);
     EGITexturesModule(engine);
@@ -636,13 +689,74 @@ void CEngineInterface::EGIUpdate(CEngine &engine) { //Update the display of the 
     EGISelectedEntityModule(engine);
     EGINewEntityModule(engine);
     EGICameraModule(engine, engine.inpENGInputs.camINPChosenCamera);
+    
+    if (bEGIScriptEditorON) {
+        EGIDockingScriptEditor(engine);
+    }
+
+    EGIMenuBar(engine);
 
     EGIWireframeUpdate();
     EGIFullscreenUpdate(engine);
 
     EGIInterfaceToEngine(engine);
+}
 
-    //Post Update
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//Framebuffer window module
+void CEngineInterface::EGIFramebufferModule(CEngine& engine, GLuint texture) {
+    ImGui::Begin("Framebuffer window"); {
+        //ImGui::BeginChild("Framebuffer child"); //Using a child will auto fill the window
+        ImVec2 wSize = ImGui::GetWindowSize();
+        //ImGui::Text("test");
+        ImGui::Image((ImTextureID)texture, ImVec2(engine.iENGScreenWidth, engine.iENGScreenHeight), ImVec2(0, 1), ImVec2(1, 0));
+        //ImGui::EndChild();
+    }
+    ImGui::End();
+}
+
+std::string CEngineInterface::openfiledialog(char* filter, HWND owner) {
+    std::wstring src;
+    const std::wstring title = L"Select a File";
+    std::wstring filename(MAX_PATH, L'\0');
+
+    OPENFILENAMEW ofn = { };
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = owner; //Put NULL
+    ofn.lpstrFilter = L"Textures\0*.png*\0All\0*.*\0";
+    ofn.lpstrFile = &filename[0];  // use the std::wstring buffer directly
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrTitle = title.c_str();
+    ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST;
+
+    if (GetOpenFileNameW(&ofn))
+    {
+        src = filename;    //<----------Save filepath in global variable 
+    }
+    
+    std::string converted_string_src(src.begin(), src.end());
+    return converted_string_src;
+}
+
+//Test menubar + file explorer
+void CEngineInterface::EGIMenuBar(CEngine& engine) {
+    ImGui::BeginMainMenuBar();
+    if (ImGui::BeginMenu("Menu")) {
+        if (ImGui::MenuItem("Open file", "Ctrl+O")) {
+            std::string pathFile = openfiledialog((char*)"All Files (*.*)\0*.*\0", NULL);
+            std::cout << "path file : " << pathFile << std::endl;
+        }
+        ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Project")) {
+        if (ImGui::MenuItem("Add")) {
+        }
+        ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Window")) {
+        if (ImGui::MenuItem("Script Editor")) {
+            bEGIScriptEditorON = !bEGIScriptEditorON;
+        }
+        ImGui::EndMenu();
+    }
+    ImGui::EndMainMenuBar();
 }

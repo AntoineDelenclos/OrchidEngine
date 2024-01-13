@@ -120,6 +120,12 @@
     <ClCompile Include="EXTERNAL\IMGUI\imgui_stdlib.cpp">
       <Filter>Source Files\EXTERNAL\IMGUI</Filter>
     </ClCompile>
+    <ClCompile Include="INTERNAL\Entities\CMesh.cpp">
+      <Filter>Source Files\INTERNAL\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="INTERNAL\Entities\CModel.cpp">
+      <Filter>Source Files\INTERNAL\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXTERNAL\IMGUI\imconfig.h">
@@ -200,6 +206,18 @@
     <ClInclude Include="EXTERNAL\IMGUI\imgui_stdlib.h">
       <Filter>Header Files\EXTERNAL\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\CMesh.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\CModel.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\Mesh.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="INTERNAL\Entities\Model.h">
+      <Filter>Header Files\INTERNAL\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="INTERNAL\Shaders\core.frag">
@@ -212,6 +230,24 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="INTERNAL\Shaders\light.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="post-process.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="post-process.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\post-process.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\post-process.vs">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\model_loading.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="INTERNAL\Shaders\model_loading.vs">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

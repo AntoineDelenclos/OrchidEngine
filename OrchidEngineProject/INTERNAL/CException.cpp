@@ -87,6 +87,9 @@ void CException::EXCAfficherMessage(unsigned int valeur) {
 	case MAP_KEYBINDS_EMPTY:
 		std::cout << "Keybinds' map is empty" << std::endl;
 		break;
+	case FRAMEBUFFER_INCOMPLETE:
+		std::cout << "ERROR::FRAMEBUFFER::INCOMPLETE" << std::endl;
+		break;
 	default:
 		std::cout << "Autre exception." << std::endl;
 		break;

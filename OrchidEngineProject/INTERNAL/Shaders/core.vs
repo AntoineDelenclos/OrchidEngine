@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 //La valeur de location correspond à l'id d'attribution pour chaque vertex dans glVertexAttribPointer
 

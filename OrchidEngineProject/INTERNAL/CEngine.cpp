@@ -36,7 +36,7 @@ CEngine::CEngine() {
 
 	//CEngine* enginecopy = this;
 	//prdrENGRenderPipeline = new CRender;
-	strENGAssetsFolder = "../../Assets/"; //La racine est le .vcxproj
+	strENGAssetsTexturesFolder = "../../Assets/Textures/"; //La racine est le .vcxproj
 
 	iENGMaxNumberOfTextures = 100;
 	pstrENGTexturesPath = new (std::string[iENGMaxNumberOfTextures]);
@@ -182,11 +182,11 @@ void CEngine::ENGSetNormRec(bool norm) {
 bool CEngine::bENGGetNormRec() {
 	return bENGNormeRec_709;
 }
-void CEngine::ENGSetAssetsFolder(std::string path) {
-	strENGAssetsFolder = path;
+void CEngine::ENGSetAssetsTexturesFolder(std::string path) {
+	strENGAssetsTexturesFolder = path;
 }
-std::string CEngine::strENGGetAssetsFolder() {
-	return strENGAssetsFolder;
+std::string CEngine::strENGGetAssetsTexturesFolder() {
+	return strENGAssetsTexturesFolder;
 }
 
 //////////////////////////////////////////////
@@ -194,8 +194,8 @@ std::string CEngine::strENGGetAssetsFolder() {
 //Launch the mandatory code line to run OpenGL and create the main window
 void CEngine::ENGStart() {
 	//Utilisation d'OpenGL 3.3 pour avoir les nouveautés:
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //Permet d'utiliser le GPU et les vertex (nouveautés OpenGL)
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //Obligatoire pour macOS
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); //Fenêtre redimensionnable ou non
@@ -220,7 +220,8 @@ void CEngine::ENGStart() {
 	//Creating shaders use in the engine
 	shaENGCoreShader = CShader("INTERNAL/Shaders/core.vs", "INTERNAL/Shaders/core.frag"); //La racine est le .vcxproj
 	shaENGLightShader = CShader("INTERNAL/Shaders/light.vs", "INTERNAL/Shaders/light.frag");
-	
+	shaENGPostProcessShader = CShader("INTERNAL/Shaders/post-process.vs", "INTERNAL/Shaders/post-process.frag");
+
 	//Adding and loading all our texture files
 	CTexture tex_1 = CTexture("wall_0_4.png", true);
 	tex_1.TEXBinding(*this);
@@ -244,7 +245,7 @@ void CEngine::ENGStart() {
 	tex_s.TEXBinding(*this);
 	ENGAddTextureToAllTexturesList(tex_s);
 
-	glViewport(0, 0, iENGScreenWidth, iENGScreenHeight); //Redimensionne relativement à la taille d'écran
+	//glViewport(0, 0, iENGScreenWidth, iENGScreenHeight); //Redimensionne relativement à la taille d'écran
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND); //Permet d'activer le canal de transparence (alpha)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -398,13 +399,13 @@ void CEngine::ENGFrameUpdate() {
 	//Window state update
 	glfwPollEvents();//Poll for and process events
 	glfwGetFramebufferSize(pwindowENGWindow, &iENGScreenWidth, &iENGScreenHeight);
-	glViewport(0, 0, iENGScreenWidth, iENGScreenHeight);
+	//glViewport(0, 0, iENGScreenWidth, iENGScreenHeight);
 	glClearColor(pgfENGBackgroundColor[0], pgfENGBackgroundColor[1], pgfENGBackgroundColor[2], pgfENGBackgroundColor[3]); //Permet de vider le cache de ce qu'il y avait avant
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Et de mettre la couleur que l'on souhaite
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	//Rendering update
 	//ENGWireframeUpdate();
-	ENGCameraUpdate();
+	//ENGCameraUpdate();
 	ENGFpsCounterAndLimiter();
 	//ENGPostProcess();
 	
@@ -541,7 +542,7 @@ void CTexture::TEXBinding(CEngine& engine) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	std::string filepath = engine.strENGGetAssetsFolder().c_str() + strTEXImagePath;
+	std::string filepath = engine.strENGGetAssetsTexturesFolder().c_str() + strTEXImagePath;
 	unsigned char* pucTEXImage = stbi_load(filepath.c_str(), &iTEXTextureWidth, &iTEXTextureHeight, &iTEXNumeroChannels, 0);
 	if (!pucTEXImage) {
 		CException exception = CException(ERREUR_LOAD_IMAGE);

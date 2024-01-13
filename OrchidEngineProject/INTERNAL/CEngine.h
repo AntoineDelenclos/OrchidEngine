@@ -27,6 +27,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+//#include "ShlObj_core.h"
+#include <Windows.h>
+
 #include "GlobalTools.h"
 #include "CException.h"
 #include "Entities/CEntity.h"
@@ -53,7 +56,7 @@ public:
 
 	//Render pipeline
 	//Il faudra charger "../../../Assets/nom_texture.extension" Dans pstrENGTexturesPath seul nom_texture.extension sera stocké
-	std::string strENGAssetsFolder;
+	std::string strENGAssetsTexturesFolder;
 	int iENGMaxNumberOfTextures;//Valeur déprécié dans la dernière version
 	std::string* pstrENGTexturesPath; //Est-ce qu'il faudrait pas mieux stocker les GLuint qui sont bind avec GlBindTexture(GL_TEXTURE_2D, texture) où texture est un GLuint
 	//CRender* prdrENGRenderPipeline;
@@ -108,9 +111,12 @@ public:
 	GLuint uiENGMaxNumberOfTextures;
 	CTexture* ptexENGAllTextures;
 
+	GLuint framebuffer_texture;
+
 	//Render
 	CShader shaENGCoreShader;
 	CShader shaENGLightShader;
+	CShader shaENGPostProcessShader;
 
 	int iENGMaxNumberVAO;
 	int iENGMaxNumberVBO;
@@ -147,8 +153,8 @@ public:
 	GLfloat gfENGGetGamma();
 	void ENGSetNormRec(bool checked);
 	bool bENGGetNormRec();
-	void ENGSetAssetsFolder(std::string path);
-	std::string strENGGetAssetsFolder();
+	void ENGSetAssetsTexturesFolder(std::string path);
+	std::string strENGGetAssetsTexturesFolder();
 	
 	//CRender* rdrENGGetRenderPipeline();
 
@@ -188,6 +194,7 @@ public:
 	int iTEXTextureHeight;
 	int iTEXNumeroChannels;
 	bool bTEXTransparent;
+	std::string strTEXType; //specular ou diffuse
 //public:
 	std::string strTEXImagePath;
 	CTexture();
@@ -208,4 +215,5 @@ public:
 	bool bTEXGetTransparent();
 
 	void TEXBinding(CEngine& engine);
+	
 };

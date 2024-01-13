@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 in vec2 TexCoord;
 in vec3 Normal;
@@ -226,5 +226,5 @@ void main(){
 	
 	ObjectColor *= result;
 	FragColor = vec4(ObjectColor, material.transparency);
-	FragColor = func_post_processing(FragColor);
+	//FragColor = func_post_processing(FragColor);
 }

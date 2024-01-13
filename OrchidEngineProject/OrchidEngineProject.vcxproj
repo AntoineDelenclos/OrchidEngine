@@ -104,14 +104,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMPLOT;C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMGUI;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLM\glm-0.9.9.8\glm\glm;C:\Users\antoi\OneDrive\Bureau\OpenGL\STB\stb-master;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\include;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\antoi\Documents\OpenGL\IMPLOT;C:\Users\antoi\Documents\OpenGL\IMGUI;C:\Users\antoi\Documents\OpenGL\GLM\glm-0.9.9.8\glm\glm;C:\Users\antoi\Documents\OpenGL\STB\stb-master;C:\Users\antoi\Documents\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\include;C:\Users\antoi\Documents\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;C:\Users\antoi\Documents\OpenGL\assimp-5.3.1\assimp-5.3.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\antoi\Documents\OpenGL\assimp-5.3.1\assimp-5.3.1\lib\Debug;C:\Users\antoi\Documents\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\antoi\Documents\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
     </Link>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMPLOT;C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMGUI;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLM\glm-0.9.9.8\glm\glm;C:\Users\antoi\OneDrive\Bureau\OpenGL\STB\stb-master;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\include;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMPLOT;C:\Users\antoi\OneDrive\Bureau\Backup\Projet J\Code\OpenGLProject1\OpenGLProject1\IMGUI;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLM\glm-0.9.9.8\glm\glm;C:\Users\antoi\OneDrive\Bureau\OpenGL\STB\stb-master;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\include;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;C:\Users\antoi\OneDrive\Bureau\OpenGL\assimp-5.3.1\assimp-5.3.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -132,8 +132,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\antoi\OneDrive\Bureau\OpenGL\assimp-5.3.1\assimp-5.3.1\lib\Debug;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLEW\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;C:\Users\antoi\OneDrive\Bureau\OpenGL\GLFW\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
     </Link>
@@ -161,6 +161,8 @@
     <ClCompile Include="INTERNAL\Entities\CCube.cpp" />
     <ClCompile Include="INTERNAL\Entities\CEntity.cpp" />
     <ClCompile Include="INTERNAL\Entities\CLight.cpp" />
+    <ClCompile Include="INTERNAL\Entities\CMesh.cpp" />
+    <ClCompile Include="INTERNAL\Entities\CModel.cpp" />
     <ClCompile Include="INTERNAL\GlobalTools.cpp" />
     <ClCompile Include="INTERNAL\main.cpp" />
   </ItemGroup>
@@ -190,6 +192,10 @@
     <ClInclude Include="INTERNAL\Entities\CCube.h" />
     <ClInclude Include="INTERNAL\Entities\CEntity.h" />
     <ClInclude Include="INTERNAL\Entities\CLight.h" />
+    <ClInclude Include="INTERNAL\Entities\CMesh.h" />
+    <ClInclude Include="INTERNAL\Entities\CModel.h" />
+    <ClInclude Include="INTERNAL\Entities\Mesh.h" />
+    <ClInclude Include="INTERNAL\Entities\Model.h" />
     <ClInclude Include="INTERNAL\GlobalTools.h" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +203,12 @@
     <None Include="INTERNAL\Shaders\core.vs" />
     <None Include="INTERNAL\Shaders\light.frag" />
     <None Include="INTERNAL\Shaders\light.vs" />
+    <None Include="INTERNAL\Shaders\model_loading.frag" />
+    <None Include="INTERNAL\Shaders\model_loading.vs" />
+    <None Include="INTERNAL\Shaders\post-process.frag" />
+    <None Include="INTERNAL\Shaders\post-process.vs" />
+    <None Include="post-process.frag" />
+    <None Include="post-process.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -137,22 +137,50 @@ void CRender::RDRRenderingLightCubes(CEngine& engine) {
 }
 
 void CRender::RDRPostProcess(CEngine &engine) {
-	GLint brightnessUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.brightness");
-	GLint contrastUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.contrast");
-	GLint saturationUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.saturation");
-	GLint gammaUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.gamma");
-	GLint grayscale_normLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.grayscale_norm");
-	engine.shaENGCoreShader.SHAUse();
+	//GLint brightnessUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.brightness");
+	//GLint contrastUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.contrast");
+	//GLint saturationUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.saturation");
+	//GLint gammaUniformLocation = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.gamma");
+	//GLint grayscale_normLoc = glGetUniformLocation(engine.shaENGCoreShader.Program, "post_process.grayscale_norm");
+	//engine.shaENGCoreShader.SHAUse();
+	//if (engine.bENGGetNormRec() == false) {
+	//	glUniform3f(grayscale_normLoc, (GLfloat)0.299, (GLfloat)0.587, (GLfloat)0.114);
+	//}
+	//else if (engine.bENGGetNormRec() == true) {
+	//	glUniform3f(grayscale_normLoc, (GLfloat)0.213, (GLfloat)0.715, (GLfloat)0.0722);
+	//}
+
+	//glUniform1f(brightnessUniformLocation, engine.gfENGGetBrightness());
+	//glUniform1f(contrastUniformLocation, engine.gfENGGetContrast());
+	//glUniform1f(saturationUniformLocation, engine.gfENGGetSaturation());
+	//glUniform1f(gammaUniformLocation, engine.gfENGGetGamma());
+	// 
+	// 
+	// 
+	////New shaders
+	/*GLint brightnessUniformLocation_2 = glGetUniformLocation(engine.shaENGPostProcessShader.Program, "post_process.brightness");
+	GLint contrastUniformLocation_2 = glGetUniformLocation(engine.shaENGPostProcessShader.Program, "post_process.contrast");
+	GLint saturationUniformLocation_2 = glGetUniformLocation(engine.shaENGPostProcessShader.Program, "post_process.saturation");
+	GLint gammaUniformLocation_2 = glGetUniformLocation(engine.shaENGPostProcessShader.Program, "post_process.gamma");
+	GLint grayscale_normLoc_2 = glGetUniformLocation(engine.shaENGPostProcessShader.Program, "post_process.grayscale_norm");
+	engine.shaENGPostProcessShader.SHAUse();
 	if (engine.bENGGetNormRec() == false) {
-		glUniform3f(grayscale_normLoc, (GLfloat)0.299, (GLfloat)0.587, (GLfloat)0.114);
+		glUniform3f(grayscale_normLoc_2, (GLfloat)0.299, (GLfloat)0.587, (GLfloat)0.114);
 	}
 	else if (engine.bENGGetNormRec() == true) {
-		glUniform3f(grayscale_normLoc, (GLfloat)0.213, (GLfloat)0.715, (GLfloat)0.0722);
+		glUniform3f(grayscale_normLoc_2, (GLfloat)0.213, (GLfloat)0.715, (GLfloat)0.0722);
 	}
+	std::cout << "brightness = " << engine.gfENGGetBrightness() << std::endl;
 
-	glUniform1f(brightnessUniformLocation, engine.gfENGGetBrightness());
-	glUniform1f(contrastUniformLocation, engine.gfENGGetContrast());
-	glUniform1f(saturationUniformLocation, engine.gfENGGetSaturation());
-	glUniform1f(gammaUniformLocation, engine.gfENGGetGamma());
+	glUniform1f(brightnessUniformLocation_2, engine.gfENGGetBrightness());
+	glUniform1f(contrastUniformLocation_2, engine.gfENGGetContrast());
+	glUniform1f(saturationUniformLocation_2, engine.gfENGGetSaturation());
+	glUniform1f(gammaUniformLocation_2, engine.gfENGGetGamma());*/
+
+
+	//Test
+
+	engine.shaENGPostProcessShader.SHAUse();
+	glUniform1f(glGetUniformLocation(engine.shaENGPostProcessShader.Program, "ourTexture"), 8);
 }
 //Check la liste des entités et prévoir une valeur LOD qui dit le rayon à partir de notre position à laquelle on affiche les objets et qu'on les charge dans la pipeline
